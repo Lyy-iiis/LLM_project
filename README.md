@@ -13,7 +13,7 @@ LLM_project
 |   |   process
 |   |   |   # processing info
 |   |   generate
-|   |   |   # generating music
+|   |   |   # generating image
 ```
 
 ## Detailed tasks
