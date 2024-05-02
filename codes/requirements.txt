@@ -10,3 +10,5 @@ tensorboard
 matplotlib
 pydub
 zhipuai
+diffusers>=0.27.0
+safetensors
