@@ -16,12 +16,13 @@ import warnings
 
 parser = argparse.ArgumentParser(description = 'Extractor')
 
-parser.add_argument('--audio_file_name', type = str)
+parser.add_argument('--input_list_path', type = str, default = './.tmp/extract_input_list.txt')
 parser.add_argument('--model_path', type = str, default = '/ssdshare/LLMs/')
 parser.add_argument('--data_path', type = str, default = './')
-parser.add_argument('--output_file', type = str, default = 'extract_output.txt')
+parser.add_argument('--output_path', type = str, default = './.tmp/extract/')
 parser.add_argument('--window_size', type = int, default = 30_000)
 parser.add_argument('--overlap_size', type = int, default = 5_000)
+parser.add_argument('--device_num', type = int, default = 1)
 
 args = parser.parse_args()
 
@@ -37,16 +38,32 @@ assert DEVICE == "cuda", "WHY DONT YOU HAVE CUDA???????"
 TEMPORARY_PATH = DATA_PATH + ".tmp/"
 if not os.path.exists(TEMPORARY_PATH) :
     os.makedirs(TEMPORARY_PATH)
-CUDA_NUM = torch.cuda.device_count()
-if CUDA_NUM == 1 :
-    warnings.warn("Only 1 GPU may hurt performance.")
+CUDA_NUM = args.device_num
+assert CUDA_NUM > 0, "DO YOU WANT ME TO DONATE MY GPU TO YOU????"
+assert CUDA_NUM <= torch.cuda.device_count(), "YOU ARE ASKING FOR TOO MANY GPUS"
 CUDA_DEVICE = [f"cuda:{i}" for i in range(CUDA_NUM)]
 WINDOW_SIZE = args.window_size
 OVERLAP_SIZE = args.overlap_size
-OUTPUT_FILE = args.output_file
-audio_file_name = args.audio_file_name
+OUTPUT_PATH = args.output_path
+input_list_path = args.input_list_path
 
 #######################################################
+
+audio_file_name = []
+with open(DATA_PATH + input_list_path, "r") as f :
+    for line in f :
+        audio_file_name.append(line.rstrip())
+        print(audio_file_name[-1])
+
+# mp3 cast 2 wav
+from pydub import AudioSegment
+for (file_name, i) in zip(audio_file_name, range(len(audio_file_name))) :
+    if file_name[-4:] == ".mp3" :
+        audio = AudioSegment.from_mp3(DATA_PATH + file_name)
+        audio = audio.set_channels(1)
+        audio.export(DATA_PATH + file_name[:-4] + ".wav", format = "wav")
+        audio_file_name[i] = file_name[:-4] + ".wav"
+print(audio_file_name)
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH + "Qwen-Audio-Chat/", trust_remote_code = True)
 
@@ -56,10 +73,21 @@ for device in CUDA_DEVICE :
     models.append(model)
 
 
-def meaningful_lyrics(lyrics) :
-    if "NOLYRICS" in lyrics :
+def meaningful_lyrics(lyrics):
+    if "NOLYRICS" in lyrics:
         return False
-    if len(lyrics) < 100 :
+    if len(lyrics) < 100:
+        return False
+
+    words = lyrics.split()
+    total_words = len(words)
+    unique_words = len(set(words))
+    if unique_words / total_words < 0.17:
+        return False
+    max_len = 0
+    for word in words:
+        max_len = max(max_len, len(word))
+    if max_len > 15 and lyrics.isascii() :
         return False
     return True
 
@@ -77,14 +105,13 @@ def extract(file_name, device = 0, path = DATA_PATH) :
     ])
     
     lyrics, _ = models[device].chat(tokenizer, query = query, history = None)
+    lyrics = lyrics.split('"')[1]
     if not meaningful_lyrics(lyrics) :
         lyrics = None
-    else :
-        lyrics = lyrics.split('"')[1]
     return decription, lyrics
 
 
-def partition_extract(file_name, no_clear = False) :
+def partition_extract(file_name, device_start = 0, no_clear = False) :
     #####################################
     # I don't recommend parallel because running the same model continiously causes problems.
     #####################################
@@ -108,32 +135,47 @@ def partition_extract(file_name, no_clear = False) :
             end = duration
         piece = audio[start:end]
         piece.export(TEMPORARY_PATH + file_name + f"/{i}.wav", format = "wav")
-        description_piece, lyrics_piece = extract(f"/{i}", device = i % CUDA_NUM, path = TEMPORARY_PATH + file_name + "/")
+        print(f"using device {(i + device_start) % CUDA_NUM}")
+        description_piece, lyrics_piece = extract(f"/{i}", device = (i + device_start) % CUDA_NUM, path = TEMPORARY_PATH + file_name + "/")
         description.append(description_piece)
         lyrics.append(lyrics_piece)
 
     if not no_clear :
         os.system(f"rm -rf {TEMPORARY_PATH + file_name + '/'}")
 
-    return description, lyrics
+    return description, lyrics, (num_of_pieces + device_start) % CUDA_NUM
 
 
-description, lyrics = partition_extract(audio_file_name)
-prompt = f"This music is cut into {len(description)} pieces. Each piece has a length of {WINDOW_SIZE // 1000} seconds and an overlap of {OVERLAP_SIZE // 1000} seconds. The description of each piece is as follows:\n"
-for i, d in enumerate(description) :
-    prompt += f"Description piece {i + 1}: {d}\n"
+def make_prompt(file_name, device_start = 0) :
+    description, lyrics, device_start = partition_extract(file_name, device_start = device_start)
+    prompt = f"This music is cut into {len(description)} pieces. Each piece has a length of {WINDOW_SIZE // 1000} seconds and an overlap of {OVERLAP_SIZE // 1000} seconds. The description of each piece is as follows:\n"
+    for i, d in enumerate(description) :
+        prompt += f"Description piece {i + 1}: {d}\n"
 
-have_lyrics = False
-for l in lyrics :
-    if l is not None :
-        have_lyrics = True
-        break
-
-if have_lyrics :
-    prompt += f"\nThe lyrics are as follows:\n"
-    for i, l in enumerate(lyrics) :
+    have_lyrics = False
+    for l in lyrics :
         if l is not None :
-            prompt += f"{l}\n"
+            have_lyrics = True
+            break
 
-with open(TEMPORARY_PATH + OUTPUT_FILE, "w") as f :
-    f.write(prompt)
+    if have_lyrics :
+        prompt += f"\nThe lyrics are as follows:\n"
+        for i, l in enumerate(lyrics) :
+            if l is not None :
+                prompt += f"{l}\n"
+    return prompt, device_start
+
+prompts = []
+device_start = 0
+for file_name in audio_file_name :
+    tmp, device_start = make_prompt(file_name[:-4], device_start = device_start)
+    prompts.append(tmp)
+    print("successfully add prompt for " + file_name)
+
+if not os.path.exists(OUTPUT_PATH) :
+    os.makedirs(OUTPUT_PATH)
+
+for file_name, prompt in zip(audio_file_name, prompts) :
+    with open(OUTPUT_PATH + file_name[:-4] + ".prompt", "w") as f :
+        f.write(prompt)
+    print("successfully write prompt for " + file_name)
