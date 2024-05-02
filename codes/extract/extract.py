@@ -16,10 +16,10 @@ import warnings
 
 parser = argparse.ArgumentParser(description = 'Extractor')
 
-parser.add_argument('--input_list_path', type = str, default = './.tmp/extract_input_list.txt')
+parser.add_argument('--input_file_name', type = str, default = 'input_list.txt')
 parser.add_argument('--model_path', type = str, default = '/ssdshare/LLMs/')
-parser.add_argument('--data_path', type = str, default = './')
-parser.add_argument('--output_path', type = str, default = './.tmp/extract/')
+parser.add_argument('--data_path', type = str, default = '../data/')
+parser.add_argument('--output_path', type = str, default = '../data/.tmp/extract/')
 parser.add_argument('--window_size', type = int, default = 30_000)
 parser.add_argument('--overlap_size', type = int, default = 5_000)
 parser.add_argument('--device_num', type = int, default = 1)
@@ -45,12 +45,12 @@ CUDA_DEVICE = [f"cuda:{i}" for i in range(CUDA_NUM)]
 WINDOW_SIZE = args.window_size
 OVERLAP_SIZE = args.overlap_size
 OUTPUT_PATH = args.output_path
-input_list_path = args.input_list_path
+input_file_name = args.input_file_name
 
 #######################################################
 
 audio_file_name = []
-with open(DATA_PATH + input_list_path, "r") as f :
+with open(DATA_PATH + input_file_name, "r") as f :
     for line in f :
         audio_file_name.append(line.rstrip())
         print(audio_file_name[-1])

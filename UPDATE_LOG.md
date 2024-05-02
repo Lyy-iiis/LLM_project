@@ -1,3 +1,8 @@
+## 24.05.02 15:00 XQC
+- Half of process part.
+
+- Modify `extract.py`, create `data` directory.
+
 ## 24.05.02 14:30 LYY
 
 - Try Stable-Diffusion-xl-based-1.0

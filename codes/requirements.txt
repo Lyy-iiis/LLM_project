@@ -9,3 +9,4 @@ pillow
 tensorboard
 matplotlib
 pydub
+zhipuai
