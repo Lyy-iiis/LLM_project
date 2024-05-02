@@ -1,3 +1,6 @@
+## 24.05.03 0:45 XQC
+- Fix the pipeline `lpw_stable_diffusion_xl.py`. Now load the custom pipeline from local file. Tested it works by asking "background be black" at the very very end of the prompt. This bug is caused by not copying codes completely from the original pipeline. Ah, what can I say.
+
 ## 24.05.02 15:00 XQC
 - Half of process part.
 
