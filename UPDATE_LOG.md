@@ -1,3 +1,6 @@
+## 24.05.04 12:30 XQC
+- Fix SQA's `tryInstantStyle.ipynb`. We'd better not use this, huh.
+
 ## 24.05.03 10:05 SQA
 - Throw `tryInstantStyle.ipynb`, which attempts to use InstantStyle but fails. The repo of InstantStyle has been cloned into `/ssdshare/LLMs/InstantStyle`. The original repo url is `https://github.com/InstantStyle/InstantStyle.git`. Note that you should read the README in the repo before you try to run the codes.
 

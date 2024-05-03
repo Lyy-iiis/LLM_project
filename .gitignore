@@ -3,4 +3,7 @@
 *.wav
 **/.tmp/
 *.png
+*.jpg
+*.jpeg
+**/__pycache__/
 **/=0.27.0
