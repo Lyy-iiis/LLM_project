@@ -1,4 +1,7 @@
-## 24.05.04 12:30 XQC
+## 24.05.03 14:31 SQA
+- Prompting engineering in `precess.py`. And tiny change in `test_playground.ipynb` in output directory.
+
+## 24.05.03 12:30 XQC
 - Fix SQA's `tryInstantStyle.ipynb`. We'd better not use this, huh.
 
 ## 24.05.03 10:05 SQA

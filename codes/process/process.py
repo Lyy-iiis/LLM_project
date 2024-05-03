@@ -110,7 +110,89 @@ prompts = []
 for file_name in audio_file_name :
   with open(PROMPT_PATH + file_name + ".prompt", "r") as f :
     prompts.append(f.read())
-print(prompts)
+# print(prompts)
+
+# Here is the version with both positive and negative prompts
+
+# system_prompt = """
+# You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
+# for this audio. To specify, your prompt should contain and only contain **two parts, 
+# one positive and one negative**, according to the description. Each part should be comprised of some 
+# seperated words or phrases, but not sentences. Note that you should combine the descriptions
+# of all pieces of the music into one pair of prompts. 
+
+# Negative prompt refers to features that
+# you don't want to see in the image. Note that your prompt should be suitable
+# for text-to-image-generation tasks. For example, your prompt should contain items to appear, background 
+# color or people's appearance if needed; but your prompt should not contain descriptions of the audio, 
+# like what instruments occur in the music or tempo, melody of the music; instead you should represent the 
+# emotional information of the audio by imaging proper scenes in the image.
+
+# Here are a few examples of prompts:
+
+# good prompt example1:
+
+# Positive: a man, masterpiece, best quality, high quality
+
+# Negative: text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry
+
+# good prompt example2:
+
+# Positive: detailed and refined, Zero Two from the anime Darling in the Franxx, distinctive pink hair, mesmerizing green eyes, dynamic pose, showcasing her strong and fearless personality, anime style, 8k resolution, 16:9 aspect ratio, battlefield background symbolizing the constant fights she has to face, confident and determined expression, black background
+
+# Negative: text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry
+
+# """
+
+# Here is the version with only positive prompt
+
+system_prompt = """
+You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
+for this audio. 
+
+**Note that you should combine the descriptions
+of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
+
+The prompt should be comprised of some 
+seperated words or phrases, but not sentences. Note that your prompt should be suitable
+for text-to-image-generation tasks. 
+
+For example, your prompt should contain items to appear, background 
+color, people's appearance if needed, and so on; but your prompt should not contain direct descriptions 
+of the audio, 
+like what instruments occur in the music or tempo, melody of the music.
+
+You can represent the emotional information of the audio by adding proper items to the image. For example, if the music is upbeat, you could use descriptions like 'a sunny park' or 'a joyful crowd'. If the music has a strong nostalgic feel, you could use 'vintage style', 'antique camera', or 'old-fashioned radio.'
+
+You can also use background color to convey emotional information. For example, if the music is warm, you could use 'warm tones' or 'a combination of orange and brown'.
+
+Here are a few examples of prompts:
+
+good prompt example1:
+
+a man, masterpiece, best quality, high quality
+
+good prompt example2:
+
+Zero Two from the anime Darling in the Franxx, detailed and refined, distinctive pink hair, mesmerizing green eyes, dynamic pose, showcasing her strong and fearless personality, anime style, 8k resolution, 16:9 aspect ratio, battlefield background symbolizing the constant fights she has to face, confident and determined expression, black background
+
+good prompt example3:
+
+Jay Chou in a fantasy world, playing piano, 8k resolution, 16:9 aspect ratio, 60fps, with a dreamy aesthetic.
+
+bad prompt example:
+
+strong beats, female vocalist, pulsing synthesizers
+"""
+
+load()
+print(type(MODEL), type(TOKENIZER))
+messages = [
+    {"role": "system", "content": system_prompt},
+    {"role": "user", "content": prompts[0]},
+]
+response, tokens = response(messages)
+print(response, tokens)
 
 ##############################################################
 
@@ -124,4 +206,4 @@ print(prompts)
 # response, tokens = response(messages)
 # print(response, tokens)
 
-#SQA teacg
+# teacg
