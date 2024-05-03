@@ -1,11 +1,19 @@
-## 24.05.04 12:30 XQC
+## 24.05.03 14:30 LYY
+
+- Change `tryInstantStyle.ipynb`. Don't use stable-diffusion model anymore! The image generated really damages the eyes. However, it works well with the `playground-v2.5-1024px-aesthetic` model.
+
+- Try some examples to generate images using `playground-v2.5-1024px-aesthetic` with long prompts, `lpw_stable_diffusion_xl.py` really works!
+
+- Now can use `stable-diffusion-xl-base-1.0` to generate images with `use_safetensors=True` and `variant="fp16"`. (But don't use it makes better images.)
+
+## 24.05.03 12:30 XQC
 - Fix SQA's `tryInstantStyle.ipynb`. We'd better not use this, huh.
 
 ## 24.05.03 10:05 SQA
 - Throw `tryInstantStyle.ipynb`, which attempts to use InstantStyle but fails. The repo of InstantStyle has been cloned into `/ssdshare/LLMs/InstantStyle`. The original repo url is `https://github.com/InstantStyle/InstantStyle.git`. Note that you should read the README in the repo before you try to run the codes.
 
 - The codes are all from README, but a problem is that it must connect huggingface to access the base model
-`stabilityai/stable-diffusion-xl-base-1.0`. I tried to change this into the base model in ssdshare by lly but failed, raising error saying that something was missing in the base model path. Then I tried to change the `StableDiffusionXLPipeline.from_pretrained` into `DiffusionPipeline.from_pretrained`, which was used in lyy's codes, but more confusing errors occured and I gave up..
+`stabilityai/stable-diffusion-xl-base-1.0`. I tried to change this into the base model in ssdshare by lyy but failed, raising error saying that something was missing in the base model path. Then I tried to change the `StableDiffusionXLPipeline.from_pretrained` into `DiffusionPipeline.from_pretrained`, which was used in lyy's codes, but more confusing errors occured and I gave up..
 
 - You can also find a demo notebook in the repo. But there is an error `cannot import name 'StableDiffusionXLControlNetPipeline' from 'diffusers'.` in some cell. (It seems that if you have the repo, you don't need to run all the `install dependency` at the beginning of this notebook.)
 
