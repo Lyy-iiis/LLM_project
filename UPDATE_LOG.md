@@ -1,3 +1,9 @@
+## 24.05.03 21:00 LYY
+
+- Create `generate.py`. Now we can generate images using `main.ipynb` from the original music! A memorable milestone!
+
+- We need to find a way to get more information during process step. Because only several words prompt seems to be not enough to generate a good image.
+
 ## 24.05.03 17:00 XQC
 
 - Modify `process.py`. File output now.
