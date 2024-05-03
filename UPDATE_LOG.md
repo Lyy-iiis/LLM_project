@@ -1,3 +1,9 @@
+## 24.05.03 17:00 XQC
+
+- Modify `process.py`. File output now.
+
+- Create `main.ipynb` to organize the process.
+
 ## 24.05.03 14:31 SQA
 
 - Prompting engineering in `precess.py`. And tiny change in `test_playground.ipynb` in output directory.

@@ -29,6 +29,8 @@ MODEL_PATH = args.model_path
 MODEL_ID = {"llama-3-8B" : "Meta-Llama-3-8B-Instruct/"}
 DATA_PATH = args.data_path
 OUTPUT_PATH = args.output_path
+if not os.path.exists(OUTPUT_PATH) :
+  os.makedirs(OUTPUT_PATH)
 PROMPT_PATH = args.prompt_path
 
 
@@ -54,7 +56,7 @@ def load() :
   else :
     raise ValueError("Model not found")
   
-def response(messages) :
+def f_response(messages) :
   if not IS_MODEL_LOCAL[MODEL_NAME] :
     response = MODEL.chat.completions.create(
         model = MODEL_NAME,
@@ -186,24 +188,15 @@ strong beats, female vocalist, pulsing synthesizers
 """
 
 load()
+token_spent = 0
 print(type(MODEL), type(TOKENIZER))
-messages = [
-    {"role": "system", "content": system_prompt},
-    {"role": "user", "content": prompts[0]},
-]
-response, tokens = response(messages)
-print(response, tokens)
-
-##############################################################
-
-# Ex.
-# load()
-# print(type(MODEL), type(TOKENIZER))
-# messages = [
-#     {"role": "system", "content": "You are a pirate chatbot who always responds in pirate speak!"},
-#     {"role": "user", "content": "Who are you?"},
-# ]
-# response, tokens = response(messages)
-# print(response, tokens)
-
-# teacg
+for (prompt, file_name) in zip(prompts, audio_file_name) :
+  messages = [
+      {"role": "system", "content": system_prompt},
+      {"role": "user", "content": prompt},
+  ]
+  response, tokens = f_response(messages)
+  with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
+    f.write(response)
+  token_spent += tokens
+print("Token spent:", token_spent)
