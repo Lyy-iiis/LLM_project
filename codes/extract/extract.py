@@ -18,8 +18,9 @@ parser = argparse.ArgumentParser(description = 'Extractor')
 
 parser.add_argument('--input_file_name', type = str, default = 'input_list.txt')
 parser.add_argument('--model_path', type = str, default = '/ssdshare/LLMs/')
-parser.add_argument('--data_path', type = str, default = '../data/')
-parser.add_argument('--output_path', type = str, default = '../data/.tmp/extract/')
+parser.add_argument('--data_path', type = str, default = './data/')
+parser.add_argument('--music_path', type=str, default='./data/music/')
+parser.add_argument('--output_path', type = str, default = './data/.tmp/extract/')
 parser.add_argument('--window_size', type = int, default = 30_000)
 parser.add_argument('--overlap_size', type = int, default = 5_000)
 parser.add_argument('--device_num', type = int, default = 1)
@@ -33,7 +34,8 @@ PWD = os.getcwd()
 DATA_PATH = args.data_path
 if DATA_PATH[0] == '.' :
     DATA_PATH = PWD + "/" + DATA_PATH
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+MUSIC_PATH = args.music_path
+DEVICE = "cuda" if torch.cuda.is_available() else "xuwei"
 assert DEVICE == "cuda", "WHY DONT YOU HAVE CUDA???????"
 TEMPORARY_PATH = DATA_PATH + ".tmp/"
 if not os.path.exists(TEMPORARY_PATH) :
@@ -59,9 +61,9 @@ with open(DATA_PATH + input_file_name, "r") as f :
 from pydub import AudioSegment
 for (file_name, i) in zip(audio_file_name, range(len(audio_file_name))) :
     if file_name[-4:] == ".mp3" :
-        audio = AudioSegment.from_mp3(DATA_PATH + file_name)
+        audio = AudioSegment.from_mp3(MUSIC_PATH + file_name)
         audio = audio.set_channels(1)
-        audio.export(DATA_PATH + file_name[:-4] + ".wav", format = "wav")
+        audio.export(MUSIC_PATH + file_name[:-4] + ".wav", format = "wav")
         audio_file_name[i] = file_name[:-4] + ".wav"
 print(audio_file_name)
 
@@ -92,7 +94,7 @@ def meaningful_lyrics(lyrics):
     return True
 
 
-def extract(file_name, device = 0, path = DATA_PATH) :
+def extract(file_name, device = 0, path = MUSIC_PATH) :
     query = tokenizer.from_list_format([
         {'audio': path + file_name + '.wav'}, 
         {'text': 'Please give a detailed description (emotion, background) of this piece of music, with no less than 5 sentences. You should give 5 sentences, not the lyrics, not words. '},
@@ -116,7 +118,7 @@ def partition_extract(file_name, device_start = 0, no_clear = False) :
     # I don't recommend parallel because running the same model continiously causes problems.
     #####################################
     file_name = file_name + ''
-    audio = AudioSegment.from_wav(DATA_PATH + file_name + ".wav")
+    audio = AudioSegment.from_wav(MUSIC_PATH + file_name + ".wav")
     duration = len(audio)
     num_of_pieces = (duration - OVERLAP_SIZE) // (WINDOW_SIZE - OVERLAP_SIZE) + 1
     file_name = file_name.replace(" ", "_")
