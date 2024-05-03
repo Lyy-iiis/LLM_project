@@ -1,3 +1,7 @@
+## 24.05.03 14:31 SQA
+
+- Prompting engineering in `precess.py`. And tiny change in `test_playground.ipynb` in output directory.
+
 ## 24.05.03 14:30 LYY
 
 - Change `tryInstantStyle.ipynb`. Don't use stable-diffusion model anymore! The image generated really damages the eyes. However, it works well with the `playground-v2.5-1024px-aesthetic` model.
