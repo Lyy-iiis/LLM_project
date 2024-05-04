@@ -1,3 +1,9 @@
+## 24.05.04 9:23 SQA
+
+- Add input propmt.
+
+To run the code, first create a file `data/input_list.txt` and write your prompt here. It can be empty.
+
 ## 24.05.03 21:00 LYY
 
 - Create `generate.py`. Now we can generate images using `main.ipynb` from the original music! A memorable milestone!

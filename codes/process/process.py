@@ -16,6 +16,7 @@ parser.add_argument('--input_file_name', type = str, default = 'input_list.txt')
 parser.add_argument('--data_path', type = str, default = '../data/')
 parser.add_argument('--output_path', type = str, default = '../data/.tmp/process/')
 parser.add_argument('--prompt_path', type = str, default = '../data/.tmp/extract/')
+parser.add_argument('--inprompt_path', type = str, default = 'input_prompt.txt')
 
 args = parser.parse_args()
 
@@ -32,6 +33,7 @@ OUTPUT_PATH = args.output_path
 if not os.path.exists(OUTPUT_PATH) :
   os.makedirs(OUTPUT_PATH)
 PROMPT_PATH = args.prompt_path
+INPROMPT_PATH = args.inprompt_path
 
 
 input_file_name = args.input_file_name
@@ -187,13 +189,16 @@ bad prompt example:
 strong beats, female vocalist, pulsing synthesizers
 """
 
+with open(DATA_PATH + INPROMPT_PATH, "r") as f:
+  inprompt = f.read()
+
 load()
 token_spent = 0
 print(type(MODEL), type(TOKENIZER))
 for (prompt, file_name) in zip(prompts, audio_file_name) :
   messages = [
       {"role": "system", "content": system_prompt},
-      {"role": "user", "content": prompt},
+      {"role": "user", "content": inprompt+'\n'+prompt},
   ]
   response, tokens = f_response(messages)
   with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
