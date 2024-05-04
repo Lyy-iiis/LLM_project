@@ -209,6 +209,8 @@ You can represent the emotional information of the audio by adding proper items 
 
 You can also use background color to convey emotional information. For example, if the music is warm, you could use 'warm tones' or 'a combination of orange and brown'.
 
+Note that the if the name of the audio is provided, your image should be related to it.
+
 Here are a few examples of prompts:
 
 example1:
