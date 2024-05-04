@@ -1,3 +1,7 @@
+## 24.05.04 17:45 XQC
+
+- Find and modify a style transfer, based on Gatys' paper. It's a little bit slow, but the result is good.  This is a standalone implementation, and the interface has not been written yet.
+
 ## 24.05.04 16:00 XQC
 
 - Modify several files. Now work properly.

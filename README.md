@@ -18,25 +18,28 @@ LLM_project
 
 ## Detailed tasks
 ### Extract
-Two parts, from lyrics and from music, each with a LM.
+Two parts, from lyrics and from music. Qwen does both jobs well.
 
 Input : music
 
-Output : prompt/dictionary
+Output : prompt
 
 ### Process
 Throwing everything to GPT/GLM.
 
-Input : prompt/dictionary
+Input : prompt
 
-Output :  prompt/dictionary
+Output :  prompt
 
 ### Generate
-Generate image using the prompt/dictionary.
+Generate image using the prompt.
 
 Input : prompt/dictionary
 
 Output : image
+
+### Style Transfer
+Transfer the style of the image. Make it more like an illustration or a cover.
 
 # To run the codes
 ### Extract
