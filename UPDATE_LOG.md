@@ -1,3 +1,7 @@
+## 24.05.04 14:48 SQA
+
+- Improve prompts in process. Maybe we should try another way.
+
 ## 24.05.04 9:23 SQA
 
 - Add input propmt.
