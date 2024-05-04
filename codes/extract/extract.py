@@ -97,7 +97,7 @@ def meaningful_lyrics(lyrics):
 def extract(file_name, device = 0, path = MUSIC_PATH) :
     query = tokenizer.from_list_format([
         {'audio': path + file_name + '.wav'}, 
-        {'text': 'Please give a detailed description (emotion, background) of this piece of music, with no less than 5 sentences. You should give 5 sentences, not the lyrics, not words. '},
+        {'text': 'Please give a detailed description (emotion, background, gender) of this piece of music, with no less than 5 sentences. You should give 5 sentences, NOT words. Do NOT use the lyrics of the music.'},
     ])
     decription, _ = models[device].chat(tokenizer, query = query, history = None)
 

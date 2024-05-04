@@ -16,7 +16,7 @@ parser.add_argument('--input_file_name', type = str, default = 'input_list.txt')
 parser.add_argument('--data_path', type = str, default = '../data/')
 parser.add_argument('--output_path', type = str, default = '../data/.tmp/process/')
 parser.add_argument('--prompt_path', type = str, default = '../data/.tmp/extract/')
-parser.add_argument('--inprompt_path', type = str, default = 'input_prompt.txt')
+parser.add_argument('--inprompt_path', type = str, default = '.tmp/inprompt/')
 
 args = parser.parse_args()
 
@@ -253,13 +253,13 @@ output: angel with white wings, dressed in flowing white garment, purity, soft c
 
 """
 
-with open(DATA_PATH + INPROMPT_PATH, "r") as f:
-  inprompt = f.read()
 
 load()
 token_spent = 0
 print(type(MODEL), type(TOKENIZER))
 for (prompt, file_name) in zip(prompts, audio_file_name) :
+  with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+    inprompt = f.read()
   messages = [
       {"role": "system", "content": system_prompt},
       {"role": "user", "content": inprompt+'\n'+prompt},

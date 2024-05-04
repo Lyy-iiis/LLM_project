@@ -70,15 +70,14 @@ with open(DATA_PATH + input_file_name, "r") as f :
 
 # Replace ".mp3" with ".prompt" in audio_file_name
 audio_file_name = [re.sub(r'\.mp3$', '.prompt', audio) for audio in audio_file_name]
+audio_file_name = [re.sub(r'\.wav$', '.prompt', audio) for audio in audio_file_name]
 for audio in audio_file_name :
     print(audio)
 
 prompt = {}
 for audio in audio_file_name :
-    prompt[audio] = ""
     with open(PROMPT_PATH + audio, "r") as f :
-        for line in f :
-            prompt[audio] += line
+        prompt[audio] = f.read()
     # print(prompt[audio])
 
 print("Prompt loaded")

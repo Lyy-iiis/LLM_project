@@ -1,3 +1,7 @@
+## 24.05.04 16:00 XQC
+
+- Modify several files. Now work properly.
+
 ## 24.05.04 14:48 SQA
 
 - Improve prompts in process. Maybe we should try another way.
@@ -6,7 +10,7 @@
 
 - Add input propmt.
 
-To run the code, first create a file `data/input_list.txt` and write your prompt here. It can be empty.
+To run the code, first create a file `data/input_prompt.txt` and write your prompt here. It can be empty.
 
 ## 24.05.03 21:00 LYY
 
