@@ -78,7 +78,7 @@ for device in CUDA_DEVICE :
 def meaningful_lyrics(lyrics):
     if "NOLYRICS" in lyrics:
         return False
-    if len(lyrics) < 100:
+    if len(lyrics) < 10:
         return False
 
     words = lyrics.split()

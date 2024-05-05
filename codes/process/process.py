@@ -23,11 +23,11 @@ args = parser.parse_args()
 ##############################################################
 
 MODEL_NAME = args.model
-IS_MODEL_LOCAL = {"glm-4" : False, "llama-3-8B" : True}
+IS_MODEL_LOCAL = {"glm-4" : False, "llama-3-8B" : True, "llama-3-70B": True}
 MODEL = None
 TOKENIZER = None
 MODEL_PATH = args.model_path
-MODEL_ID = {"llama-3-8B" : "Meta-Llama-3-8B-Instruct/"}
+MODEL_ID = {"llama-3-8B" : "Meta-Llama-3-8B-Instruct/", "llama-3-70B" : "Meta-Llama-3-70B-Instruct-AWQ/"}
 DATA_PATH = args.data_path
 OUTPUT_PATH = args.output_path
 if not os.path.exists(OUTPUT_PATH) :
@@ -43,6 +43,7 @@ input_file_name = args.input_file_name
 
 def load() :
   global MODEL, TOKENIZER
+  print("Loading model")
   if MODEL_NAME == "glm-4" :
     load_dotenv()
     zhipuai_api_key = os.environ.get("ZHIPUAI_API_KEY")
@@ -55,8 +56,18 @@ def load() :
     device_map = "auto",
     trust_remote_code = True
     )
+  elif MODEL_NAME == "llama-3-70B" :
+    assert torch.cuda.device_count() >= 4, f"YOU WANT TO USE ONLY {torch.cuda.device_count()} GPU TO RUN THIS MODEL ???"
+    TOKENIZER = AutoTokenizer.from_pretrained(MODEL_PATH + MODEL_ID[MODEL_NAME], trust_remote_code = True)
+    MODEL = AutoModelForCausalLM.from_pretrained(
+    MODEL_PATH + MODEL_ID[MODEL_NAME],
+    torch_dtype = torch.float16,
+    device_map = "auto",
+    trust_remote_code = True
+    )
   else :
     raise ValueError("Model not found")
+  print("Model loaded")
   
 def f_response(messages) :
   if not IS_MODEL_LOCAL[MODEL_NAME] :

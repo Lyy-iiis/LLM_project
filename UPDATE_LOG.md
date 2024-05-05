@@ -1,3 +1,11 @@
+## 24.05.06 19:30 LYY
+
+- Try Meta-Llama-3-70B-Instruct-AWQ model as process, it needs 4 GPU to run and the output is really slow (4 minutes per question). The reason is the model is too large s.t. 4 GPU is almost full. The output seems to be good, but I haven't run enough tests. I think someone may need to ask TA for at least 6 GPU to test it.
+
+- Add Meta-Llama-3-70B-Instruct-AWQ model to `process.py`.
+
+- Our prompt really needs to be modified !!!
+
 ## 24.05.05 15:00 XQC
 
 - Use https://arxiv.org/pdf/1606.05897 to preserve the color of the content image. 
