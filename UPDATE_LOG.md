@@ -1,4 +1,12 @@
-## 24.05.06 19:30 LYY
+## 24.05.05 20:27 SQA
+
+- Add prompt for no-character image generation. It seems that the model is rather good at this aspect.
+
+- Also modify some code to be run more conveniently.
+
+- For no-character, prompt will be `<audio>.prompt2`, image will be `<audio>.10-12`.
+
+## 24.05.05 19:30 LYY
 
 - Try Meta-Llama-3-70B-Instruct-AWQ model as process, it needs 4 GPU to run and the output is really slow (4 minutes per question). The reason is the model is too large s.t. 4 GPU is almost full. The output seems to be good, but I haven't run enough tests. I think someone may need to ask TA for at least 6 GPU to test it.
 
