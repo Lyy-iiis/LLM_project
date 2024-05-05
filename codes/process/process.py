@@ -215,7 +215,7 @@ Here are a few examples of prompts:
 
 <example1>:
 
-<input>: The name of the audio is "Burn". Please generate a image of 8k resolution, 16:9 aspect ratio, 60fps.
+<input>: The name of the audio is "Burn". Please generate an image of 8k resolution, 16:9 aspect ratio, 60fps.
 
 This music is cut into 6 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
 Description piece 1: A pop/EDM instrumental with a fast tempo, featuring a repetitive piano melody, synthesizer bass, and energetic drumming. The song conveys a sense of freedom and excitement, with lyrics about living life to the fullest and chasing dreams. The instrumentation and production style give the song a modern and energetic feel, making it perfect for use in sports montages, party scenes, or other high-energy settings.
@@ -246,7 +246,7 @@ When you crash and burn
 
 <example2>:
 
-<input>: The name of the audio is "infinity heaven". Please generate a image of 8k resolution, 16:9 aspect ratio, 60fps. Animation style.
+<input>: The name of the audio is "infinity heaven". Please generate an image of 8k resolution, 16:9 aspect ratio, 60fps. Animation style.
 
 This music is cut into 6 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
 Description piece 1: A fast-paced, energetic track with a strong beat, powerful synths, and piano.
@@ -273,6 +273,78 @@ for (prompt, file_name) in zip(prompts, audio_file_name) :
   ]
   response, tokens = f_response(messages)
   with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
+    f.write(response)
+  token_spent += tokens
+# print("Token spent:", token_spent)
+
+##############################################################
+# prompt for generating image with no character
+
+system_prompt = """
+You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
+for this audio. 
+
+**Note that you should combine the descriptions
+of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
+
+The prompt should be comprised of some seperated words or phrases, but not sentences. And here the key point is that the image **should not contain any character**!
+
+For example, your prompt should contain background color, items to appear, their color or features, and so on; but your prompt **should not** contain direct descriptions 
+of the audio, such as "strong beats, female vocalist, pulsing synthesizers, catchy melody", or instruments
+like "piano, synthesizer bass, energetic drumming". The prompt should not contain any character as well, such as "a girl dressed in red, holding a blanket",
+"angel with white wings", "a robot with a sword" and so on.
+
+You can represent the emotional information of the audio by adding proper items to the image. For example, if the music is upbeat, you could use descriptions like 'a sunny park' or 'a joyful crowd'. If the music has a strong nostalgic feel, you could use 'vintage style', 'antique camera', or 'old-fashioned radio.'
+
+You can also use background color to convey emotional information. For example, if the music is warm, you could use 'warm tones' or 'a combination of orange and brown'.
+
+Note that the if the name of the audio is provided, your image should be related to it.
+
+Here are a few examples of prompts:
+
+<example1>:
+
+<input>: The name of the audio is "Clock Paradox". Please generate an image of 8k resolution, 16:9 aspect ratio, 60fps.
+
+This music is cut into 6 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
+Description piece 1: This is a dynamic and powerful track that is perfect for use in trailers, video games, and other media projects. The music features a blend of electronic and orchestral elements, with powerful drums, intense synths, and lush strings. The track is also very energetic and exciting, making it ideal for use in action scenes and other high-energy moments. Overall, this music is perfect for adding a sense of excitement and intensity to any project.
+Description piece 2: This is a dynamic, powerful, and energetic electronic music track featuring synthesizers, percussion, and bass. The music is uplifting, energetic, and inspiring, making it perfect for use in sports, fitness, and workout videos, as well as in corporate and business presentations, advertising and marketing campaigns, and other media projects that require a strong and inspiring soundtrack.
+Description piece 3: Uplifting energetic melodic track with a strong bass line, plucks, and drums.
+Description piece 4: A powerful and energetic music track with synthesizers, strings, piano, and drums. The epic and uplifting mood will evoke feelings of joy and happiness. It will certainly work well with corporate videos, business projects, presentations, commercials, advertising, TV ads, YouTube videos, vlogs, and more.
+Description piece 5: This is a powerful and epic electronic music track with a strong melody and driving rhythm. The track features piano, strings, brass, and powerful drums. It has a modern and energetic sound and is perfect for use in trailers, video games, and other media projects that require a powerful and epic soundtrack.
+Description piece 6: This is a high-energy, action-packed, electronic rock track. The song features electric guitars, synthesizers, drums, and a catchy melody. The song is perfect for action movies, video games, and trailers. The song is energetic, upbeat, and exciting. The song is a mix of electronic and rock music. The song is intense, and it has a strong beat. The song is perfect for action movies, video games, and trailers.
+
+<output>: a large circular, unusual-designed clock with multiple layers, golden rings around it, fragmented and broken frames or portals to depict alternate timelines or dimensions, abstract shapes and lines connecting different elements, cool blues and grays color, soft yet dramatic lighting, light sources coming from above and behind the central clock, casting shadows and highlights, sense of motion, complexity, mystery, and thought-provoking contemplation, science fiction, 8k resolution, 16:9 aspect ratio, 60fps
+
+<example2>:
+
+<input>: Please generate an image of 8k resolution, 16:9 aspect ratio, 60fps. Animation style.
+
+This music is cut into 7 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
+Description piece 1: The music is a fast-paced electronic dance music with distorted guitar and synthesizer riffs, fast-paced drums, and glitchy effects. It is intense, aggressive, and energetic, with a sense of urgency and excitement. The music is suitable for action scenes, extreme sports, and high-energy content. It is also well-suited for video games and other forms of media that require fast-paced and intense music.
+Description piece 2: This is a fast-paced electronic instrumental. The music is fast tempo with synthesizer, drum machine, and other electronic instruments. The music is very loud and the instruments are distorted. The music is aggressive and energetic. The music is suitable for use in a video game or in a movie scene where there is a fast-paced action scene.
+Description piece 3: This is a techno music piece. It is fast-paced and has a glitchy, glitchy feel. The instruments used are synthesizers and electronic drums. The mood of this piece is energetic and intense. It would be suitable for use in a video game or an action movie.
+Description piece 4: This is a high energy electro dubstep track with a lot of drive and energy. It has a lot of hard hitting drums and edgy bass lines. The piano and strings are used to add a sense of emotion and depth to the track. It is perfect for use in a video game, film, or any other project that needs a high energy soundtrack.
+Description piece 5: This is a fast-paced, high-energy electronic track that is sure to get your heart racing. The driving beat and distorted synthesizers create a sense of urgency and excitement, making it perfect for action scenes or high-energy activities. The fast tempo and complex rhythms add to the intensity of the track, making it a great choice for use in extreme sports or video games. Overall, this music is intense, fast-paced, and highly energetic, making it a great choice for any project that needs a boost of energy.
+Description piece 6: This is a techno piece that is fast-paced and energetic. It features a lot of glitchy, distorted sounds and electronic beats. It sounds like something you would hear at a techno club.
+Description piece 7: A high energy, powerful and aggressive metal track. This is the ideal soundtrack for extreme sports, fight scenes, car chases, war and battle footage, as well as for a variety of other high intensity applications.
+
+<output>: abstract graphical elements throughout the image that resemble digital glitches, distortion effects, shades of blue and purple with some pink highlights, feeling of coolness and futurism, gradient transitioning from dark at the top to lighter colors towards the bottom, space-like or digital atmosphere, a slender beam of light on the right running vertically downwards, ray of hope or contrast, dynamic and chaotic, rapid movement, information overload, digital apocalypse, 8k resolution, 16:9 aspect ratio, 60fps
+
+"""
+
+# The second example is DESTRUCTION 3,2,1
+
+load()
+for (prompt, file_name) in zip(prompts, audio_file_name) :
+  with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+    inprompt = f.read()
+  messages = [
+      {"role": "system", "content": system_prompt},
+      {"role": "user", "content": inprompt+'\n'+prompt},
+  ]
+  response, tokens = f_response(messages)
+  with open(OUTPUT_PATH + file_name + ".prompt2", "w") as f :
     f.write(response)
   token_spent += tokens
 print("Token spent:", token_spent)

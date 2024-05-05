@@ -23,7 +23,7 @@ parser.add_argument('--music_path', type=str, default='../data/music/')
 parser.add_argument('--output_path', type = str, default = '../data/.tmp/extract/')
 parser.add_argument('--window_size', type = int, default = 30_000)
 parser.add_argument('--overlap_size', type = int, default = 5_000)
-parser.add_argument('--device_num', type = int, default = 1)
+parser.add_argument('--device_num', type = int, default = 4)
 
 args = parser.parse_args()
 
