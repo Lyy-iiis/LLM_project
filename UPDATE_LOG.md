@@ -1,3 +1,9 @@
+## 24.05.05 15:00 XQC
+
+- Use https://arxiv.org/pdf/1606.05897 to preserve the color of the content image. 
+
+- Modify prompts.
+
 ## 24.05.04 20:48 SQA
 
 - Modify some paths to make `extract.py` runnable independently.

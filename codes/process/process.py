@@ -213,9 +213,9 @@ Note that the if the name of the audio is provided, your image should be related
 
 Here are a few examples of prompts:
 
-example1:
+<example1>:
 
-input: The name of the audio is "Burn". Please generate a image of 8k resolution, 16:9 aspect ratio, 60fps.
+<input>: The name of the audio is "Burn". Please generate a image of 8k resolution, 16:9 aspect ratio, 60fps.
 
 This music is cut into 6 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
 Description piece 1: A pop/EDM instrumental with a fast tempo, featuring a repetitive piano melody, synthesizer bass, and energetic drumming. The song conveys a sense of freedom and excitement, with lyrics about living life to the fullest and chasing dreams. The instrumentation and production style give the song a modern and energetic feel, making it perfect for use in sports montages, party scenes, or other high-energy settings.
@@ -226,22 +226,27 @@ Description piece 5: This is a high energy, intense dubstep track with a strong 
 Description piece 6: This is a dance track that features a female vocal singing over a loud and energetic beat. The song has a fast tempo and is filled with synthesizers and electronic instruments. The lyrics are in a foreign language and are not understandable. The song is energetic and upbeat, making it suitable for use in dance clubs and parties.
 
 The lyrics are as follows:
-Living in a crowded dream
-Searching for the quiet that you're not to breathe
-Gave up upon your sanctuary
-That hides behind your shadow
-While you try to take the sun down
-Thought to never change to gold
-After thinking that you're in the world of no one
-No one ever told you that you have to fight for something
-Or your life will be a balance
-Standing still
+Living in the clouded dream
+Searching for the quiet that you need to breathe
+Gave up on your sanity to hide behind your shadow
+While you tried to take the sun down
+Hearts will never change to gold
+Out there thinking that you're in the world alone
+No one ever told you that you'll have to fight for something
+Or you never learn to balance
+It's too cold
+Standing in the middle of the downfall
+Looking in the mirror cuz it's only you
+It's too cold
+Standing in the middle of the downfall
+Looking in the mirror cuz it's only you
+When you crash and burn
 
-output: a girl dressed in red, holding a blanket, red or yellow background representing fire, mystical warmth, 8k resolution, 16:9 aspect ratio, 60fps
+<output>: a girl dressed in red, holding a blanket, red or yellow background representing fire, mystical warmth, 8k resolution, 16:9 aspect ratio, 60fps
 
-example2:
+<example2>:
 
-input: The name of the audio is "infinity heaven". Please generate a image of 8k resolution, 16:9 aspect ratio, 60fps. Animation style.
+<input>: The name of the audio is "infinity heaven". Please generate a image of 8k resolution, 16:9 aspect ratio, 60fps. Animation style.
 
 This music is cut into 6 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
 Description piece 1: A fast-paced, energetic track with a strong beat, powerful synths, and piano.
@@ -251,7 +256,7 @@ Description piece 4: This is a fast-paced, energetic electronic track featuring 
 Description piece 5: This is a techno trance piece that is energetic, exciting, and uplifting. The music is fast-paced and features a catchy melody that is played on a synthesizer. The tempo is fast and the music is intense and driving. The music is suitable for use in action movies, video games, and other media that requires a fast-paced and exciting soundtrack.
 Description piece 6: This is a short piano piece that evokes a sense of nostalgia and longing. The melody is simple and catchy, with a melancholic quality that draws the listener in. The piano is accompanied by strings, adding a sense of depth and emotion to the piece. The overall atmosphere is one of reflection and contemplation. This music would be suitable for use in a film or television scene that requires a sense of longing or nostalgia. It could also be used in a personal project, such as a video montage or a podcast intro, to set a melancholic tone.
 
-output: angel with white wings, dressed in flowing white garment, purity, soft color, stars, anime, 8k resolution, 16:9 aspect ratio, 60fps
+<output>: angel with white wings, dressed in flowing white garment, purity, soft color, stars, anime, 8k resolution, 16:9 aspect ratio, 60fps
 
 """
 
