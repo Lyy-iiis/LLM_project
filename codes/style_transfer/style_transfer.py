@@ -20,12 +20,17 @@ import argparse
 import tqdm
 
 from utils import image_loader, save_image, ContentLoss, GramMatrix, StyleLoss, get_input_param_optimizer, get_style_model_and_losses, run_style_transfer, color_matching, YIQ, luminance_process
-
+import re
 ############################################################################
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--content', '-c', type=str, required=True, help='The path to the Content image')
-parser.add_argument('--style', '-s', type=str, required=True, help='The path to the style image')
+# parser.add_argument('--content', '-c', type=str, required=True, help='The relative path to the Content image')
+parser.add_argument('--content', '-c', type=str, default = 'see list', help='The path to the Content image')
+parser.add_argument('--data_path', type=str, default = '../data/', help='The path to input_list.txt')
+parser.add_argument('--content_path', type=str, default = '../data/.tmp/generate/', help='The path to the content image')
+parser.add_argument('--style_path', type=str, default = '../data/style/', help='The path to the style image')
+# parser.add_argument('--style', '-s', type=str, required=True, help='The path to the style image')
+parser.add_argument('--style', '-s', type=str, default = 'see list', help='The path to the style image')
 parser.add_argument('--epoch', '-e', type=int, default=300, help='The number of epoch')
 parser.add_argument('--content_weight', '-c_w', type=int, default=1, help='The weight of content loss')
 parser.add_argument('--style_weight', '-s_w', type=int, default=500, help='The weight of style loss')
@@ -44,52 +49,84 @@ assert torch.cuda.is_available(), "WHY DONT YOU HAVE CUDA??????"
 DEVICE = torch.device("cuda:0")
 IMG_SIZE = args.img_size
 OUTPUT_PATH = args.output_path
+DATA_PATH = args.data_path
+CONTENT_PATH = args.content_path
+STYLE_PATH = args.style_path
 
 cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVICE).eval()
 
 
 ############################################################################
+input_file_name = []
+if args.content == 'see list':
+    with open(DATA_PATH + 'input_list.txt', "r") as f :
+        for line in f :
+            input_file_name.append(line.rstrip())
+    input_file_name = [re.sub(r'\.mp3$', '/0.png', audio) for audio in input_file_name]
+    input_file_name = [re.sub(r'\.wav$', '/0.png', audio) for audio in input_file_name]
+else:
+    input_file_name.append(args.content)
 
-style_img = image_loader(args.style, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-if args.gray:
-    content_img = image_loader(args.content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
-    input_img = image_loader(args.content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
-elif args.color_preserve:
-    content_img = image_loader(args.content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-    input_img = image_loader(args.content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-    style_img = color_matching(content_img, style_img).to(DEVICE)
-elif args.luminance_only:
-    ori_img = image_loader(args.content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-    content_img, style_img = luminance_process(ori_img, style_img)
-    input_img = content_img.clone().detach().to(DEVICE)
+style_file_name = []
+if args.style == 'see list':
+    with open(DATA_PATH + 'style_list.txt', "r") as f :
+        for line in f :
+            style_file_name.append(line.rstrip())
 
 else:
-    content_img = image_loader(args.content, IMG_SIZE).type(torch.cuda.FloatTensor)
-    input_img = image_loader(args.content, IMG_SIZE).type(torch.cuda.FloatTensor)
+    style_file_name.append(args.style)
 
-input_size = Image.open(args.content).size
+for content in input_file_name:
+    for style in style_file_name:
+        if args.style == 'see list':
+            style = STYLE_PATH + style
+        # Now style is the complete path to the style image
+        style_img = image_loader(style, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+        if args.content == 'see list':
+            content = CONTENT_PATH + content
+        ### image Loaded
+        print(f"Transferring from {content} to {style}")
+        if args.gray:
+            content_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
+            input_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
+        elif args.color_preserve:
+            content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+            input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+            style_img = color_matching(content_img, style_img).to(DEVICE)
+        elif args.luminance_only:
+            ori_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+            content_img, style_img = luminance_process(ori_img, style_img)
+            input_img = content_img.clone().detach().to(DEVICE)
 
-assert style_img.size() == content_img.size(), \
-    "we need to import style and content images of the same size"
+        else:
+            content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
+            input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
 
-output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
-# a bad news is that if we concat them into a batch, cuda out of memory
-save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
-if not args.gray and not args.color_preserve and args.luminance_only:
-    upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
-    lower_bound, _ = (-ori_img[0]).max(dim = 0)
-    print(lower_bound.size(), upper_bound.size())
-    output = YIQ(output)
-    ori_img = YIQ(ori_img)
-    lumi_delta = output[0][0] - ori_img[0][0]
-    lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
-    ori_img[0][0] = ori_img[0][0] + lumi_delta
-    output = YIQ(ori_img, mode = "decode")
+        input_size = Image.open(content).size
 
-name_content, ext = os.path.splitext(os.path.basename(args.content))
-name_style, _ = os.path.splitext(os.path.basename(args.style))
-fname = name_content+'-'+name_style+ext
+        assert style_img.size() == content_img.size(), \
+            "we need to import style and content images of the same size"
 
-save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname=fname)
+        output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
+        # a bad news is that if we concat them into a batch, cuda out of memory
+        save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
+        if not args.gray and not args.color_preserve and args.luminance_only:
+            upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
+            lower_bound, _ = (-ori_img[0]).max(dim = 0)
+            print(lower_bound.size(), upper_bound.size())
+            output = YIQ(output)
+            ori_img = YIQ(ori_img)
+            lumi_delta = output[0][0] - ori_img[0][0]
+            lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
+            ori_img[0][0] = ori_img[0][0] + lumi_delta
+            output = YIQ(ori_img, mode = "decode")
 
+        if args.content == 'see list':
+            content = re.sub(r'/0.png', '.png', content)
+        name_content, ext = os.path.splitext(os.path.basename(content))
+        name_style, _ = os.path.splitext(os.path.basename(style))
+        fname = name_content+'-'+name_style+ext
+
+        save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname=fname)
+        print(f"Transfer from {content} to {style} done")
 

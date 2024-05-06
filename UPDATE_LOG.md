@@ -1,3 +1,15 @@
+## 24.05.06 16:09 SQA
+
+- Implement style_transfer API. And also modify `style_transfer.py` to make it more runnable.
+
+To specify, I keep the original way to run `style_transfer.py` with argument `-c`, `-s`, but they will be no longer required.
+
+Instead, you can write a file `style_list.txt` in `data`, containing style image names from style library `data/style/` (of course, you must first upload your style image into the library). Style images will be read from this file by default. And content images will be read from `input_list.txt` by default. (Now I only implement `0.png` generated, but later...)
+
+The code will automatically transfer any content to any style. (You still need to add `c_p` if wanted). 
+
+In `main.py` everything is done except it only transfers `0.png` in `.tmp/generate/`. The output will be saved in `.tmp/style_transfer/`.
+
 ## 24.05.05 20:27 SQA
 
 - Add prompt for no-character image generation. It seems that the model is rather good at this aspect.
