@@ -1,3 +1,9 @@
+## 24.05.06 20:30 LYY
+
+- Try to add "llama3-70B" model to `process.py`. However, fail due to some strange errors. Don't call this model temporarily.
+
+- Strange error occurs in `generate.py`, could someone fix it ?
+
 ## 24.05.06 16:09 SQA
 
 - Implement style_transfer API. And also modify `style_transfer.py` to make it more runnable.

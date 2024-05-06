@@ -5,6 +5,7 @@ import argparse
 import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+import subprocess
 
 ##############################################################
 
@@ -112,6 +113,19 @@ def f_response(messages) :
 
 ##############################################################
 
+def run_llama3_70b(input_file_name, output_file_name):
+  server = "/share/ollama/ollama serve"
+  user = f"/share/ollama/ollama run llama3:70b < \"{input_file_name}\" > \"{output_file_name}\""
+  print("Loading model")
+  process_server = subprocess.Popen(server, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  process_user = subprocess.Popen(user, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  stdout, stderr = process_user.communicate()
+  # return_code_1 = process_server.returncode
+  return_code_2 = process_user.returncode
+  print(f"User return code: {return_code_2}")
+  print(f"User output: {stdout.decode()}")
+  print(f"User error: {stderr.decode()}")
+
 audio_file_name = []
 with open(DATA_PATH + input_file_name, "r") as f :
   for line in f :
@@ -202,6 +216,7 @@ for file_name in audio_file_name :
 # These prompts are bad because they describe the music directly, rather than the image you want to generate.
 # """
 
+
 system_prompt = """
 You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
 for this audio. 
@@ -271,21 +286,31 @@ Description piece 6: This is a short piano piece that evokes a sense of nostalgi
 
 """
 
-
-load()
-token_spent = 0
-print(type(MODEL), type(TOKENIZER))
-for (prompt, file_name) in zip(prompts, audio_file_name) :
-  with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
-    inprompt = f.read()
-  messages = [
-      {"role": "system", "content": system_prompt},
-      {"role": "user", "content": inprompt+'\n'+prompt},
-  ]
-  response, tokens = f_response(messages)
-  with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
-    f.write(response)
-  token_spent += tokens
+if MODEL_NAME == "llama-3-70B" :
+  for (prompt, file_name) in zip(prompts, audio_file_name) :
+    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+      inprompt = f.read()
+    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total", "w") as f :
+      f.write(system_prompt)
+      f.write(inprompt+'\n'+prompt)
+    print(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total")
+    run_llama3_70b(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total", OUTPUT_PATH + file_name + ".prompt")
+    exit(0)
+else:
+  load()
+  token_spent = 0
+  print(type(MODEL), type(TOKENIZER))
+  for (prompt, file_name) in zip(prompts, audio_file_name) :
+    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+      inprompt = f.read()
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": inprompt+'\n'+prompt},
+    ]
+    response, tokens = f_response(messages)
+    with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
+      f.write(response)
+    token_spent += tokens
 # print("Token spent:", token_spent)
 
 ##############################################################
