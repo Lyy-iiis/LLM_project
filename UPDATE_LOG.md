@@ -1,3 +1,7 @@
+## 24.05.06 9:26 SQA
+
+- Fix a very small bug in `main.py`. And I have thrown lots of style images in `/ssdshare/style/`.
+
 ## 24.05.06 20:30 LYY
 
 - Try to add "llama3-70B" model to `process.py`. However, fail due to some strange errors. Don't call this model temporarily.
