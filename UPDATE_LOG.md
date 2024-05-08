@@ -1,6 +1,12 @@
+## 24.05.08 19:10 LYY
+
+- Make a tiny change in `llama3.py`, but it still doesn't work (I change it earlier, but forget to push).
+
+- fix SQA's update log.
+
 ## 24.05.06 9:26 SQA
 
-- Fix a very small bug in `main.py`. And I have thrown lots of style images in `/ssdshare/style/`.
+- Fix a very small bug in `main.ipynb`. And I have thrown lots of style images in `/ssdshare/style/`.
 
 ## 24.05.06 20:30 LYY
 

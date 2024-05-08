@@ -1,4 +1,5 @@
 import subprocess
+import torch
 # Define the two Bash commands you want to run concurrently
 bash_command_1 = "/share/ollama/ollama serve"
 bash_command_2 = "/share/ollama/ollama run llama3:70b < /root/LLM_project/codes/process/input.txt > /root/LLM_project/codes/process/output.txt"
@@ -12,14 +13,15 @@ process_2 = subprocess.Popen(bash_command_2, shell=True, stdout=subprocess.PIPE,
 print(process_2.pid)
 stdout_2, stderr_2 = process_2.communicate()
 
-return_code_1 = process_1.returncode
 return_code_2 = process_2.returncode
 
 print(f"Command 2 return code: {return_code_2}")
 print(f"Command 2 output: {stdout_2.decode()}")
-print("1")
-while (1):
-    continue
+print(f"Command 2 error: {stderr_2.decode()}")
+process_1.send_signal(subprocess.signal.SIGINT)
+
+# while (1):
+#     continue
 # exit(1)
 # process_1.wait()
 # os.kill(pid, signal.SIGKILL)
