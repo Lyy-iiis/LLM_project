@@ -1,3 +1,9 @@
+## 24.05.09 12:00 LYY
+
+- Add `generateAPI.py` and `generateUI.py`, you can try them: `python generateAPI.py`  to start server, `python generateUI.py` to start UI. (The image generated is only according to the prompt, the description returned is your original prompt. I will change them after finishing project.)
+
+- Test them as much as you can, thanks.
+
 ## 24.05.08 19:10 LYY
 
 - Make a tiny change in `llama3.py`, but it still doesn't work (I change it earlier, but forget to push).
