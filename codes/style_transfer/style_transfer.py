@@ -62,8 +62,9 @@ if args.content == 'see list':
     with open(DATA_PATH + 'input_list.txt', "r") as f :
         for line in f :
             input_file_name.append(line.rstrip())
-    input_file_name = [re.sub(r'\.mp3$', '/0.png', audio) for audio in input_file_name]
-    input_file_name = [re.sub(r'\.wav$', '/0.png', audio) for audio in input_file_name]
+    suffix = ["/0.png", "/10.png"]
+    tmp = [x[:-4] for x in input_file_name]
+    input_file_name = [x + y for x in tmp for y in suffix]
 else:
     input_file_name.append(args.content)
 
@@ -109,11 +110,11 @@ for content in input_file_name:
 
         output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
         # a bad news is that if we concat them into a batch, cuda out of memory
-        save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
+        # save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
         if not args.gray and not args.color_preserve and args.luminance_only:
             upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
             lower_bound, _ = (-ori_img[0]).max(dim = 0)
-            print(lower_bound.size(), upper_bound.size())
+            # print(lower_bound.size(), upper_bound.size())
             output = YIQ(output)
             ori_img = YIQ(ori_img)
             lumi_delta = output[0][0] - ori_img[0][0]
@@ -122,7 +123,8 @@ for content in input_file_name:
             output = YIQ(ori_img, mode = "decode")
 
         if args.content == 'see list':
-            content = re.sub(r'/0.png', '.png', content)
+            content = re.sub(r'/0.png', '0.png', content)
+            content = re.sub(r'/10.png', '10.png', content)
         name_content, ext = os.path.splitext(os.path.basename(content))
         name_style, _ = os.path.splitext(os.path.basename(style))
         fname = name_content+'-'+name_style+ext

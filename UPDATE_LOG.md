@@ -1,3 +1,9 @@
+## 24.05.12 18:00 XQC
+
+- Various fix. Plz `pip install -r requirements.txt` to update the environment.
+
+- Modify style transfer.
+
 ## 24.05.12 17:38 SQA
 
 - When trying styles, meet with a problem with Qwen, saying that 

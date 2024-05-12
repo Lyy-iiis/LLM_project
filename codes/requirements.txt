@@ -1,4 +1,4 @@
-transformers>=4.40.1
+transformers==4.38.1
 accelerate
 tiktoken
 einops
