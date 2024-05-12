@@ -268,7 +268,7 @@ Standing in the middle of the downfall
 Looking in the mirror cuz it's only you
 When you crash and burn
 
-<output>: a girl dressed in red, holding a blanket, red or yellow background representing fire, mystical warmth, 8k resolution, 16:9 aspect ratio, 60fps
+<output>: vibrant and dynamic scene with a central figure, anime-style character, anime fashion, a girl with with long flowing golden hair, winter outfit, red hooded jacket with white fur trim at the collar and cuffs, a warm look, left hand holding a basket, focused gaze, one eye visible and the other obscured by the hair, a determined or intense expression, various abstract shapes and elements in background, shades of orange yellow and red, sense of fire or energy, moon, circles of light scattered throughout, mystical atmosphere, 8k resolution, 16:9 aspect ratio, 60fps
 
 <example2>:
 
@@ -282,7 +282,8 @@ Description piece 4: This is a fast-paced, energetic electronic track featuring 
 Description piece 5: This is a techno trance piece that is energetic, exciting, and uplifting. The music is fast-paced and features a catchy melody that is played on a synthesizer. The tempo is fast and the music is intense and driving. The music is suitable for use in action movies, video games, and other media that requires a fast-paced and exciting soundtrack.
 Description piece 6: This is a short piano piece that evokes a sense of nostalgia and longing. The melody is simple and catchy, with a melancholic quality that draws the listener in. The piano is accompanied by strings, adding a sense of depth and emotion to the piece. The overall atmosphere is one of reflection and contemplation. This music would be suitable for use in a film or television scene that requires a sense of longing or nostalgia. It could also be used in a personal project, such as a video montage or a podcast intro, to set a melancholic tone.
 
-<output>: angel with white wings, dressed in flowing white garment, purity, soft color, stars, anime, 8k resolution, 16:9 aspect ratio, 60fps
+<output>: two figures, one an angelic being, with large white wings behind, blonde hair, white dress or robe with delicate details and draped fabric, one arm extended upwards and fingers slightly curled, another figure smaller in scale, dressed in a traditional East Asian garmen style, high waistline and wide, flowing sleeves, white clothing with some blue accents and patterns, dark hair falling straight down his back, contrasting with the lighter tones of the angel, sense of admiration or curiosity, vibrant and intricate background, a mix of geometric shapes and celestial motifs, stars and moons, sunburst design, cosmic or mystical, rich with gold, green, blue, and hints of purple, feeling of otherworldly elegance and serenity, 8k resolution, 16:9 aspect ratio, 60fps
+
 
 """
 

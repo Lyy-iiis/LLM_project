@@ -1,3 +1,16 @@
+## 24.05.12 17:38 SQA
+
+- When trying styles, meet with a problem with Qwen, saying that 
+
+```
+AssertionError: Pass argument `stream` to model.chat() is buggy, deprecated, and marked for removal. Please use model.chat_stream(...) instead of model.chat(..., stream=True).
+向model.chat()传入参数stream的用法可能存在Bug，该用法已被废弃，将在未来被移除。请使用model.chat_stream(...)代替model.chat(..., stream=True)。
+```
+
+Had better give it to XQC to fix.
+
+- Modify the prompt to contain more information, meaning that the prompt is longer..
+
 ## 24.05.09 12:00 LYY
 
 - Add `generateAPI.py` and `generateUI.py`, you can try them: `python generateAPI.py`  to start server, `python generateUI.py` to start UI. (The image generated is only according to the prompt, the description returned is your original prompt. I will change them after finishing project.)
