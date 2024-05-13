@@ -1,3 +1,11 @@
+## 24.05.13 16:00 XQC
+
+- Add style images. Please `cd codes`, `chmod +x environment.sh`, `./environment.sh` to set the correct environment.
+
+- Modify `style_transfer.py` and `process.py`. 
+
+- TODO : Complete style description.
+
 ## 24.05.12 18:00 XQC
 
 - Various fix. Plz `pip install -r requirements.txt` to update the environment.

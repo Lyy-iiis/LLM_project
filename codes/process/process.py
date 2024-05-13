@@ -6,6 +6,7 @@ import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import subprocess
+import re
 
 ##############################################################
 
@@ -287,31 +288,75 @@ Description piece 6: This is a short piano piece that evokes a sense of nostalgi
 
 """
 
-if MODEL_NAME == "llama-3-70B" :
-  for (prompt, file_name) in zip(prompts, audio_file_name) :
-    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
-      inprompt = f.read()
-    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total", "w") as f :
-      f.write(system_prompt)
-      f.write(inprompt+'\n'+prompt)
-    print(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total")
-    run_llama3_70b(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total", OUTPUT_PATH + file_name + ".prompt")
-    exit(0)
-else:
-  load()
-  token_spent = 0
-  print(type(MODEL), type(TOKENIZER))
-  for (prompt, file_name) in zip(prompts, audio_file_name) :
-    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
-      inprompt = f.read()
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": inprompt+'\n'+prompt},
-    ]
-    response, tokens = f_response(messages)
-    with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
-      f.write(response)
-    token_spent += tokens
+with open(DATA_PATH + "style/style_description.txt", "r") as f :
+  style_description = []
+  style_num = 0
+  for line in f :
+    style_description.append(line.rstrip())
+    style_num += 1
+
+style_prompt = f"""
+You are a chatbot that choose a style for the description.
+
+The user input will be a description to the generated image, and you should choose a style closest to the description, from the following {style_num} descriptions of style images.
+
+You should answer a number from 1 to {style_num} to choose the style.
+
+Here are the descriptions of the styles:
+
+"""
+for i in range(style_num) :
+  style_prompt += f"{i+1}: {style_description[i]}\n"
+
+style_prompt += """
+
+<EXAMPLE 1>:
+<INPUT> : two figures, one an angelic being, with large white wings behind, blonde hair, white dress or robe with delicate details and draped fabric, one arm extended upwards and fingers slightly curled, another figure smaller in scale, dressed in a traditional East Asian garmen style, high waistline and wide, flowing sleeves, white clothing with some blue accents and patterns, dark hair falling straight down his back, contrasting with the lighter tones of the angel, sense of admiration or curiosity, vibrant and intricate background, a mix of geometric shapes and celestial motifs, stars and moons, sunburst design, cosmic or mystical, rich with gold, green, blue, and hints of purple, feeling of otherworldly elegance and serenity, 8k resolution, 16:9 aspect ratio, 60fps
+
+<OUTPUT> : 6
+
+<EXAMPLE 2>:
+<INPUT> : vibrant and dynamic scene with a central figure, anime-style character, anime
+
+<OUTPUT> : 1
+
+"""
+
+# if MODEL_NAME == "llama-3-70B" :
+#   for (prompt, file_name) in zip(prompts, audio_file_name) :
+#     with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+#       inprompt = f.read()
+#     with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total", "w") as f :
+#       f.write(system_prompt)
+#       f.write(inprompt+'\n'+prompt)
+#     print(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total")
+#     run_llama3_70b(DATA_PATH + INPROMPT_PATH + file_name + ".prompt_total", OUTPUT_PATH + file_name + ".prompt")
+#     exit(0)
+# else:
+load()
+token_spent = 0
+print(type(MODEL), type(TOKENIZER))
+for (prompt, file_name) in zip(prompts, audio_file_name) :
+  with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+    inprompt = f.read()
+  messages = [
+      {"role": "system", "content": system_prompt},
+      {"role": "user", "content": inprompt+'\n'+prompt},
+  ]
+  response, tokens = f_response(messages)
+  with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
+    f.write(response)
+  token_spent += tokens
+  messages = [
+      {"role": "system", "content": style_prompt},
+      {"role": "user", "content": response},
+  ]
+  response, tokens = f_response(messages)
+  token_spent += tokens
+  num = re.findall(r'\b\d+\b', response)[0]
+  with open(OUTPUT_PATH + file_name + ".style", "w") as f :
+    f.write(num)
+
 # print("Token spent:", token_spent)
 
 ##############################################################
@@ -372,7 +417,7 @@ Description piece 7: A high energy, powerful and aggressive metal track. This is
 
 # The second example is DESTRUCTION 3,2,1
 
-load()
+# load()
 for (prompt, file_name) in zip(prompts, audio_file_name) :
   with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
     inprompt = f.read()
@@ -384,4 +429,13 @@ for (prompt, file_name) in zip(prompts, audio_file_name) :
   with open(OUTPUT_PATH + file_name + ".prompt2", "w") as f :
     f.write(response)
   token_spent += tokens
+  messages = [
+      {"role": "system", "content": style_prompt},
+      {"role": "user", "content": response},
+  ]
+  response, tokens = f_response(messages)
+  token_spent += tokens
+  num = re.findall(r'\b\d+\b', response)[0]
+  with open(OUTPUT_PATH + file_name + ".style2", "w") as f :
+    f.write(num)
 print("Token spent:", token_spent)
