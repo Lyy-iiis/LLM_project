@@ -1,6 +1,6 @@
 ## 24.05.15 13:30 XQC
 
-- Complete style image description. We should replace all descriptions with gpt-4o step by step.
+- Complete style image description. Replace all descriptions with gpt-4o.
 
 ## 24.05.13 16:00 XQC
 
