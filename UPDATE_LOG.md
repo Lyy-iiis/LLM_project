@@ -1,3 +1,7 @@
+## 24.05.15 13:30 XQC
+
+- Complete style image description. We should replace all descriptions with gpt-4o step by step.
+
 ## 24.05.13 16:00 XQC
 
 - Add style images. Please `cd codes`, `chmod +x environment.sh`, `./environment.sh` to set the correct environment.

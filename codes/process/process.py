@@ -306,7 +306,8 @@ Here are the descriptions of the styles:
 
 """
 for i in range(style_num) :
-  style_prompt += f"{i+1}: {style_description[i]}\n"
+  style_description[i] = style_description[i].split("%")[0]
+  style_prompt += f"{style_description[i]}\n"
 
 style_prompt += """
 
