@@ -47,6 +47,7 @@ CUDA_DEVICE = [f"cuda:{i}" for i in range(CUDA_NUM)]
 WINDOW_SIZE = args.window_size
 OVERLAP_SIZE = args.overlap_size
 OUTPUT_PATH = args.output_path
+SYSTEM_PROMPT = "You are a helpful music assistant."
 input_file_name = args.input_file_name
 
 #######################################################
@@ -71,7 +72,7 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH + "Qwen-Audio-Chat/", trust
 
 models = []
 for device in CUDA_DEVICE :
-    model = AutoModelForCausalLM.from_pretrained(MODEL_PATH + "Qwen-Audio-Chat/", device_map = device, trust_remote_code = True).eval()
+    model = AutoModelForCausalLM.from_pretrained(MODEL_PATH + "Qwen-Audio-Chat/", device_map = device, trust_remote_code = True, ).eval()
     models.append(model)
 
 
@@ -99,14 +100,14 @@ def extract(file_name, device = 0, path = MUSIC_PATH) :
         {'audio': path + file_name + '.wav'}, 
         {'text': 'Please give a detailed description (emotion, background, gender) of this piece of music, with no less than 5 sentences. You should give 5 sentences, NOT words. Do NOT use the lyrics of the music.'},
     ])
-    decription, _ = models[device].chat(tokenizer, query = query, history = None)
+    decription, _ = models[device].chat(tokenizer, query = query, history = None, system = SYSTEM_PROMPT)
 
     query = tokenizer.from_list_format([
         {'audio': path + file_name + '.wav'},
         {'text': 'Extract all the lyrics of this music if it has. Say "NOLYRICS" if it does not have lyrics or the lyrics are meaningless.'},
     ])
     
-    lyrics, _ = models[device].chat(tokenizer, query = query, history = None)
+    lyrics, _ = models[device].chat(tokenizer, query = query, history = None, system = SYSTEM_PROMPT)
     lyrics = lyrics.split('"')[1]
     if not meaningful_lyrics(lyrics) :
         lyrics = None
