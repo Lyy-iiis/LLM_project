@@ -10,7 +10,7 @@ import os
 torch.manual_seed(42)
 from pydub import AudioSegment
 import argparse 
-import warnings
+import time
 
 #######################################################
 
@@ -47,7 +47,7 @@ CUDA_DEVICE = [f"cuda:{i}" for i in range(CUDA_NUM)]
 WINDOW_SIZE = args.window_size
 OVERLAP_SIZE = args.overlap_size
 OUTPUT_PATH = args.output_path
-SYSTEM_PROMPT = "You are a helpful music assistant."
+SYSTEM_PROMPT = "You are a helpful music assistant. You are good at extracting information from music. You are able to decide whether a piece of music contains meaningful lyrics. "
 input_file_name = args.input_file_name
 
 #######################################################
@@ -77,7 +77,7 @@ for device in CUDA_DEVICE :
 
 
 def meaningful_lyrics(lyrics):
-    if "NOLYRICS" in lyrics:
+    if "NOLYRICS" in lyrics or '&' in lyrics or '%' in lyrics :
         return False
     if len(lyrics) < 10:
         return False
@@ -104,14 +104,18 @@ def extract(file_name, device = 0, path = MUSIC_PATH) :
 
     query = tokenizer.from_list_format([
         {'audio': path + file_name + '.wav'},
-        {'text': 'Extract all the lyrics of this music if it has. Say "NOLYRICS" if it does not have lyrics or the lyrics are meaningless.'},
+        {'text': 'If the music does not have lyrics, say "NOLYRICS". If the music has lyrics, extract all the lyrics of this music.'},
     ])
     
     lyrics, _ = models[device].chat(tokenizer, query = query, history = None, system = SYSTEM_PROMPT)
+    # query = tokenizer.from_list_format([
+    #     {'text': 'Is the lyrics you have extracted meaningful and correct? If it isn\'t, please say "NOLYRICS".'},
+    # ])
+    # meaningful, _ = models[device].chat(tokenizer, query = query, history = _, system = SYSTEM_PROMPT)
     lyrics = lyrics.split('"')[1]
-    if not meaningful_lyrics(lyrics) :
+    if not meaningful_lyrics(lyrics) :# or "NOLYRICS" in meaningful:
         lyrics = None
-    return decription, lyrics
+    return decription, lyrics # + "\n meaningful: " + meaningful
 
 
 def partition_extract(file_name, device_start = 0, no_clear = False) :
@@ -140,6 +144,7 @@ def partition_extract(file_name, device_start = 0, no_clear = False) :
         piece.export(TEMPORARY_PATH + file_name + f"/{i}.wav", format = "wav")
         print(f"using device {(i + device_start) % CUDA_NUM}")
         description_piece, lyrics_piece = extract(f"/{i}", device = (i + device_start) % CUDA_NUM, path = TEMPORARY_PATH + file_name + "/")
+        # time.sleep(10)
         description.append(description_piece)
         lyrics.append(lyrics_piece)
 

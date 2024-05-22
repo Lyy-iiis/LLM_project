@@ -1,3 +1,8 @@
+## 24.05.22 18:00 XQC
+
+- Try to figure out why Qwen doesn't work sometimes. Probably related with luck, since this time when I changed back to 4 gpus, it still returned trash second time on the same gpu.
+
+
 ## 24.05.15 13:30 XQC
 
 - Complete style image description. Replace all descriptions with gpt-4o.
