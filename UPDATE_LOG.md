@@ -1,3 +1,43 @@
+## 24.05.25 19:35 SQA
+
+- Complete a UI using docker, but still long way to go.
+
+You can use it by first downloading the demo directory to your local machine, then `cd demo/docker/MI-T_helm_template`, and then __remember to change the `NameSpace` in `project.yaml`__. Now you might use the __makefile__ I write for you: (remember to first helm delete your own pod)
+
+```
+make podup
+make connect
+```
+
+The first command will create the API & UI pod, and the second command will connect these two. Then you can use the UI by visiting `http://sqabuhui.ddns.net:9443`.
+
+After using you can do
+
+```
+make poddown
+```
+
+which will delete the pods and the connection.
+
+- To use your own ip, modify `IngressHost: sqabuhui.ddns.net` in `./project.yaml`.
+
+- The containers I build is all in `harbor.ai.iiis.co:9443/llmproject4sqalyyxqc`, in which there are `/api/try{x}` or `/ui/try{x}` (You see, this cannot be a good name, though.) To modify the code (also the dockerfile or requirments), push your own docker image and modify the `project.yaml` to use your own image.
+
+- The `apiurl: http://api-service:54224/generate` line in `project.yaml`, you had better not modify this unless talk to me, since this is important why this can work.
+
+- Note that in my implementation, I modify lyy's code so that in API, the music will be saved into `MP3_PATH: /ssdshare/MI-T/music/music.mp3` which you may modify. __But actually it should be `.wav`__. (Sorry for the mistake and I will fix it later...) So the expected type will be `.wav`. __TODO:__ implement the rest of our model based on the music saved.
+
+The final part is the biggest problem, which I have not figured out why, in that __one cannot upload a large music in the gradio__ (tested, 10s music is definitely fine, but `Burn` is too large). 
+
+The error is contained in the `error.txt`.
+
+Lyy's implementation does not have this problem, so I guess that the problem is either
+1. on the gradio pod there is limitation of uploading
+2. there is limitation on `sqabuhui.ddns.net`
+
+That's the end and I love docker so much..
+
+
 ## 24.05.22 18:00 XQC
 
 - Try to figure out why Qwen doesn't work sometimes. Probably related with luck, since this time when I changed back to 4 gpus, it still returned trash second time on the same gpu.
