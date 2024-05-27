@@ -11,8 +11,6 @@ WORKDIR /root
 RUN pip install --no-cache-dir -r /root/requirements.txt && \
     rm -rf /var/lib/apt/lists/*
 COPY ./code /root/code
-RUN apt update && apt install -y ffmpeg && rm -rf /var/lib/apt/lists/*
-# RUN apt install ffmpeg
 
 WORKDIR /root/code
 CMD ["python", "demo/generateAPI.py"]

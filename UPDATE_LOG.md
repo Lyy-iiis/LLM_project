@@ -1,3 +1,13 @@
+## 24.05.27 20:30 LYY
+
+-  Finish the docker, now you can run the whole pipeline using docker. Please read the `README.md` for more details. (What a damn hard work!😭 I don't want to use docker, reboot system, deal with all strange errors anymore)
+  
+-  Next step: improve `style_transfer.py`.
+  
+-  Besides, running the whole pipeline using docker is really slow, a good way is load all the models into memory when the agent starts, and then use them directly. But I'm tired of doing such things. 
+
+-  When doing style_transfer, we need to download vgg-19, it might be a good idea to download it when starting the pod. That's not hard.
+
 ## 24.05.27 10:00 LYY
 
 - Add `demo.py` which auxiliary to `generateAPI.py` and `generateUI.py`.

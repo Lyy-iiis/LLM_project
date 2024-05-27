@@ -1,9 +1,9 @@
 ########### First thing first ###########
-NameSpace: s0174   # 自己的namespace （同用户名）
+NameSpace: s0170   # 自己的namespace （同用户名）
 
 ########### API Configuration ###########
 # vllmPort: 8000
-ContainerImage: harbor.ai.iiis.co/llmproject4sqalyyxqc/api/try6:latest
+ContainerImage: harbor.ai.iiis.co:9443/lyy/tryapi12:latest
 
 # Using the llama-3-8B-instruct model
 # ModelName: /ssdshare/Meta-Llama-3-8B-Instruct/
@@ -40,8 +40,8 @@ DshmSize: 4Gi
 ########### Gradio Configuration ###########
 
 ## Replace with your domain name and gradio app docker image
-IngressHost: sqabuhui.ddns.net
-GradioImage: harbor.ai.iiis.co:9443/llmproject4sqalyyxqc/ui/try11:latest
+IngressHost: llmlab.ddns.net
+GradioImage: harbor.ai.iiis.co:9443/lyy/tryui2:latest
 apiurl: http://api-service:54224/generate
 
 # OpenAIUrl: http://openai-api:8000/v1

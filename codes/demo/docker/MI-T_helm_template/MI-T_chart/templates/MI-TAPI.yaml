@@ -55,10 +55,11 @@ spec:
         command: {{ $command }}
         args: {{ $args }}
 {{- else }}
-        command: ["python3", "code/generateAPI.py"]
-        args: ["-m", {{ $mp3path }}, 
-               {{ $additionalargs }}
-              ]
+        command: ["python3", "demo/generateAPI.py"]
+        # command: ["ls", "-l"]
+        # args: ["-m", {{ $mp3path }}, 
+        #        {{ $additionalargs }}
+        #       ]
 {{- end }}
         resources:
           limits:

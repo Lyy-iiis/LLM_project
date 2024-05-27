@@ -13,6 +13,8 @@ RUN apt-get update && \
 COPY requirements.txt /root/requirements.txt
 WORKDIR /root
 RUN pip install --no-cache-dir -r /root/requirements.txt
+
 COPY ./code /root/code
 
-CMD ["python", "/root/code/generateUI.py", "--apiurl", "http://api-service:54224/generate"]
+WORKDIR /root/code/demo
+CMD ["python", "generateUI.py", "--apiurl", "http://api-service:54224/generate"]

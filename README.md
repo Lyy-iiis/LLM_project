@@ -71,6 +71,26 @@ python generateUI.py
 
 After each generation, handly remove `codes/demo/.tmp` to avoid the cache.
 
+### Docker
+
+First, change your namespace in `codes/demo/docker/MI-T_helm_template/project.yaml` to your own namespace.
+
+To run the docker
+
+```bash
+cd codes/demo/docker/MI-T_helm_template
+make podup
+make connect
+```
+
+Then you can open the browser and visit https://llmlab.ddns.net:9443 to see the demo.
+
+```bash
+make poddown
+```
+
+remove the pod after you finish.
+
 ### Extract
 To run `extract.py` with default parameters, you should create a file in `./codes/data/input_list.txt`, in which you should declare the audio you want to deal with. 
 
