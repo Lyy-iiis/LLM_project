@@ -1,3 +1,17 @@
+## 24.05.27 10:00 LYY
+
+- Add `demo.py` which auxiliary to `generateAPI.py` and `generateUI.py`.
+
+- Modify `style_transfer.py`, the implementation of SQA is not robust enough, can't support multi-picture generation. However, my implementation is not readable enough, if you have difficulty in understanding, please contact me.
+
+- Remove many useless import files, modify the `requirements.txt`, `.gitignore` and `environment.sh`.
+
+- Now, use `generateAPI.py` and `generateUI.py`, you can run our whole pipeline, from music to image, that's a great progress!🥰 Please take a look at __`README.md`__ for more details. The next step is improving the robustness of code, especially for the messy directory structure.
+
+- The next step is to improve the robustness of the code and the quality of the generated image.
+
+- New docker waiting to complete.
+
 ## 24.05.25 19:35 SQA
 
 - Complete a UI using docker, but still long way to go.

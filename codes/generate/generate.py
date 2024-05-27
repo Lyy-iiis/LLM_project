@@ -2,17 +2,17 @@
 ########################################################
 
 from diffusers import DiffusionPipeline
-from diffusers import EDMDPMSolverMultistepScheduler
-from diffusers import StableDiffusionXLPipeline
-from pydub import AudioSegment
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from transformers.generation import GenerationConfig
+# from diffusers import EDMDPMSolverMultistepScheduler
+# from diffusers import StableDiffusionXLPipeline
+# from pydub import AudioSegment
+# from transformers import AutoModelForCausalLM, AutoTokenizer
+# from transformers.generation import GenerationConfig
 import torch
 import os
 torch.manual_seed(42)
-from pydub import AudioSegment
+# from pydub import AudioSegment
 import argparse 
-import warnings
+# import warnings
 import torch
 import re
 

@@ -3,24 +3,16 @@
 from __future__ import print_function
 
 import torch
-import torch.nn as nn
-from torch.autograd import Variable
-import torch.optim as optim
 
 import os
 from PIL import Image
-import numpy as np
 
-import torchvision.transforms as transforms
 import torchvision.models as models
 
-import copy
 import argparse
 
-import tqdm
+from utils import image_loader, save_image, run_style_transfer, color_matching, YIQ, luminance_process
 
-from utils import image_loader, save_image, ContentLoss, GramMatrix, StyleLoss, get_input_param_optimizer, get_style_model_and_losses, run_style_transfer, color_matching, YIQ, luminance_process
-import re
 ############################################################################
 
 parser = argparse.ArgumentParser()
@@ -31,7 +23,7 @@ parser.add_argument('--content_path', type=str, default = '../data/.tmp/generate
 parser.add_argument('--style_path', type=str, default = '../data/style/illustration_style/', help='The path to the style image')
 # parser.add_argument('--style', '-s', type=str, required=True, help='The path to the style image')
 parser.add_argument('--style', '-s', type=str, default = 'see list', help='The path to the style image')
-parser.add_argument('--epoch', '-e', type=int, default=300, help='The number of epoch')
+parser.add_argument('--epoch', '-e', type=int, default=50, help='The number of epoch')
 parser.add_argument('--content_weight', '-c_w', type=int, default=1, help='The weight of content loss')
 parser.add_argument('--style_weight', '-s_w', type=int, default=500, help='The weight of style loss')
 # parser.add_argument('--initialize_noise', '-i_n', action='store_true', help='Initialize with white noise? elif initialize with content image')
@@ -59,25 +51,25 @@ cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVIC
 ############################################################################
 input_file_name = []
 name = []
+# put all the picture under generate folder into a list
 if args.content == 'see list':
     with open(DATA_PATH + 'input_list.txt', "r") as f :
         for line in f :
             input_file_name.append(line.rstrip())
-    suffix = ["/0.png", "/10.png"]
     tmp = [x[:-4] for x in input_file_name]
-    name = tmp
-    input_file_name = []
+    suffix, input_file_name = [], {}
     for x in tmp:
-        for suf in suffix:
-            input_file_name.append(x+suf)
+        print(os.listdir(CONTENT_PATH+"/"+x))
+        input_file_name[x] = []
+        for pic in os.listdir(CONTENT_PATH+"/"+x):
+            if pic.endswith(".png"):
+                input_file_name[x].append(pic)
+    name = tmp
 else:
     input_file_name.append(args.content)
 
 style_file_name = []
 if args.style == 'see list':
-    # with open(DATA_PATH + 'style_list.txt', "r") as f :
-    #     for line in f :
-    #         style_file_name.append(line.rstrip())
     for fname in name :
         with open(DATA_PATH + '.tmp/process/' + fname + '.style', "r") as f :
             style_file_name.append(f.readline().rstrip())
@@ -86,6 +78,24 @@ if args.style == 'see list':
         style_file_name = [x + '.png' for x in style_file_name]
 else:
     style_file_name.append(args.style)
+
+tmp = {}
+for music in name:
+    tmp[music] = []
+    for pic in input_file_name[x]:
+        if len(pic) == 5:
+            tmp[music].append(style_file_name[0])
+        elif len(pic) == 6:
+            tmp[music].append(style_file_name[1])
+        else:
+            assert False, "You should not ask for more than 10 pictures one time"
+
+tmp_input, tmp_style = [], []
+for music in name:
+    for pic in input_file_name[music]:
+        tmp_input.append(music+"/"+pic)
+        tmp_style.append(tmp[music].pop(0))
+input_file_name, style_file_name = tmp_input, tmp_style
 
 for content, style in zip(input_file_name, style_file_name):
     if args.style == 'see list':
@@ -131,13 +141,9 @@ for content, style in zip(input_file_name, style_file_name):
         ori_img[0][0] = ori_img[0][0] + lumi_delta
         output = YIQ(ori_img, mode = "decode")
 
-    if args.content == 'see list':
-        content = re.sub(r'/0.png', '0.png', content)
-        content = re.sub(r'/10.png', '10.png', content)
     name_content, ext = os.path.splitext(os.path.basename(content))
     name_style, _ = os.path.splitext(os.path.basename(style))
     fname = name_content+'-'+name_style+ext
 
     save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname=fname)
     print(f"Transfer from {content} to {style} done")
-

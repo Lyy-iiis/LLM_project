@@ -14,6 +14,17 @@ LLM_project
 |   |   |   # processing info
 |   |   generate
 |   |   |   # generating image
+|   |   style_transfer
+|   |   |   # transfering style
+|   |   demo
+|   |   |   # demo API, UI and docker
+|   |   data
+|   |   |   # data used in the project and output
+|   |   demo.py
+|   |   main.ipynb
+|   |   |   # main code
+|   |   environment.sh
+|   |   requirements.txt
 ```
 
 ## Detailed tasks
@@ -42,6 +53,24 @@ Output : image
 Transfer the style of the image. Make it more like an illustration or a cover.
 
 # To run the codes
+
+### Demo
+
+To run the demo
+
+```bash
+cd codes
+bash environment.sh
+python demo/generateAPI.py
+```
+
+```bash
+cd codes/demo
+python generateUI.py
+```
+
+After each generation, handly remove `codes/demo/.tmp` to avoid the cache.
+
 ### Extract
 To run `extract.py` with default parameters, you should create a file in `./codes/data/input_list.txt`, in which you should declare the audio you want to deal with. 
 

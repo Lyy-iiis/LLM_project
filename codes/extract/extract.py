@@ -4,13 +4,13 @@
 
 from pydub import AudioSegment
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from transformers.generation import GenerationConfig
+# from transformers.generation import GenerationConfig
 import torch
 import os
 torch.manual_seed(42)
 from pydub import AudioSegment
 import argparse 
-import time
+# import time
 
 #######################################################
 
@@ -184,6 +184,7 @@ if not os.path.exists(OUTPUT_PATH) :
     os.makedirs(OUTPUT_PATH)
 
 for file_name, prompt in zip(audio_file_name, prompts) :
+    print(prompt)
     with open(OUTPUT_PATH + file_name[:-4] + ".prompt", "w") as f :
         f.write(prompt)
     print("successfully write prompt for " + file_name)
