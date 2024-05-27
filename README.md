@@ -55,7 +55,28 @@ in two terminals, then open the browser and visit http://localhost:7860/ to see 
 
 ### Docker
 
-First, change your namespace in `codes/demo/docker/MI-T_helm_template/project.yaml` to your own namespace.
+Build the docker:
+
+```bash
+docker login harbor.ai.iiis.co:9443
+cd demo/docker/MI-T_API_docker
+make docker USER=your_docker_username
+make push USER=your_docker_username
+```
+
+```bash
+cd demo/docker/MI-T_UI_docker
+make docker USER=your_docker_username
+make push USER=your_docker_username
+```
+
+You can remove local images after pushing.
+
+```bash
+make remove USER=your_docker_username
+```
+
+We already build the image for you. In `codes/demo/docker/MI-T_helm_template/project.yaml`, change your namespace to your own namespace, `ContainerImage` to your api image, `GradioImage` to your ui image, `IngressHost` to your own host.
 
 To run the docker
 
@@ -65,7 +86,7 @@ make podup
 make connect
 ```
 
-Then you can open the browser and visit https://llmlab.ddns.net:9443 to see the demo.
+Then you can open the browser and visit https://llmlab.ddns.net:9443 (Your ddns) to see the demo.
 
 ```bash
 make poddown

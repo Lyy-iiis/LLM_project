@@ -1,3 +1,9 @@
+## 24.05.27 23:00 LYY
+
+- Update `MI-T_helm_template`, support up-to 32M music file. 
+  
+- Make `README.md` more readable.
+
 ## 24.05.27 21:30 LYY
 
 - Change the directory structure

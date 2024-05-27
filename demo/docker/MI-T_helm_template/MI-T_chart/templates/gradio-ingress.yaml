@@ -6,6 +6,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: 32m
   name: gradio-ingress
 spec:
   ingressClassName: nginx

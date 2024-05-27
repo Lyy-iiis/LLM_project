@@ -1,14 +1,15 @@
 ########### First thing first ###########
-NameSpace: you-forget-to-set-namespace   # 自己的namespace （同用户名）
+NameSpace: s0170   # 自己的namespace （同用户名）
 
-########### vLLM Configuration ###########
+########### API Configuration ###########
 # vllmPort: 8000
-ContainerImage: harbor.ai.iiis.co/xuw/vllm:latest 
+ContainerImage: harbor.ai.iiis.co:9443/lyy/tryapi12:latest
 
 # Using the llama-3-8B-instruct model
-#ModelName: /ssdshare/Meta-Llama-3-8B-Instruct/
+# ModelName: /ssdshare/Meta-Llama-3-8B-Instruct/
+MP3_PATH: /ssdshare/MI-T/music/music.mp3
 
-ModelName: /ssdshare/xuw/llama-2-7b-py18k_merged/
+# ModelName: /ssdshare/xuw/llama-2-7b-py18k_merged/
 
 # Using the llama-3-70B-instruct model, sort of runs with the following, and set DshmSize to 16Gi, but not working well
 # ModelName: /ssdshare/Meta-Llama-3-70B-Instruct-awq/
@@ -29,7 +30,7 @@ DshmSize: 4Gi
 
 # Optional: Replace the default Command and Args
 
-# vLLMCommand: '["python3", "-m", "vllm.entrypoints.openai.api_server"]'
+# vLLMCommand: '["cat", "code/generateAPI.py"]'
 # vLLMArgs: | 
 #       ["--model", "/ssdshare/Meta-Llama-3-8B-Instruct/", 
 #        "--dtype", "auto",
@@ -39,10 +40,14 @@ DshmSize: 4Gi
 ########### Gradio Configuration ###########
 
 ## Replace with your domain name and gradio app docker image
-IngressHost: YOUR_DNS_NAME
-GradioImage: harbor.ai.iiis.co:9443/YOUR_IMAGE_NAME:VERSION
-OpenAIUrl: http://openai-api:8000/v1
+IngressHost: llmlab.ddns.net
+GradioImage: harbor.ai.iiis.co:9443/lyy/tryui2:latest
+apiurl: http://api-service:54224/generate
+
+# OpenAIUrl: http://openai-api:8000/v1
+# APIserverURL: 
 
 ## Optional: Replace the default Command and Args
-# GradioCommand: ["bash", "-c", "--"]
-# GradioArgs: ["while true; do sleep 30; done;"]
+# GradioCommand: ["python", "code/generateUI.py"]
+# GradioArgs: ["--apiurl", "http://api-service:54224/generate"]
+
