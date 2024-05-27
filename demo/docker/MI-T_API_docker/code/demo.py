@@ -11,8 +11,11 @@ STYLE_PATH = DATA_PATH + 'style/illustration_style/'
 DEVICE_NUM = cuda.device_count()
 IMAGE_NUM = 1
 
-if not os.path.exists(DATA_PATH + '.tmp/'):
-  os.makedirs(DATA_PATH + '.tmp/')
+if os.path.exists(DATA_PATH + '.tmp/'):
+  os.system(f'rm -r {DATA_PATH}.tmp/')
+
+# if not os.path.exists(DATA_PATH + '.tmp/'):
+os.makedirs(DATA_PATH + '.tmp/')
 
 list = ['extract/', 'generate/', 'process/', 'inprompt', 'style_transfer']
 

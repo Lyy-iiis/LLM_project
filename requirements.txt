@@ -18,4 +18,5 @@ matplotlib
 pydub
 zhipuai
 safetensors
-
+pillow
+safetensors

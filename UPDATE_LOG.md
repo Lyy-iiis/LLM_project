@@ -1,3 +1,9 @@
+## 24.05.27 21:30 LYY
+
+- Change the directory structure
+
+- Modify the `README.md`
+
 ## 24.05.27 20:30 LYY
 
 -  Finish the docker, now you can run the whole pipeline using docker. Please read the `README.md` for more details. (What a damn hard work!😭 I don't want to use docker, reboot system, deal with all strange errors anymore)

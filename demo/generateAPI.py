@@ -14,8 +14,8 @@ from scipy.io.wavfile import write
 from PIL import Image
 
 CODE_PATH = os.getcwd()
-MUSIC_PATH = os.getcwd() + "/data/demo/music/"
-IMAGE_PATH = os.getcwd() + "/data/demo/.tmp/style_transfer/"
+MUSIC_PATH = CODE_PATH + "/codes/data/demo/music/"
+IMAGE_PATH = CODE_PATH + "/codes/data/demo/.tmp/style_transfer/"
 
 app = FastAPI()
 
@@ -49,7 +49,8 @@ async def process_chat(prompt: ChatRequest):
     # image = pipe(prompt=user_prompt,
     #             num_inference=50,guidance_scale=3).images[0]
     # description = prompt.prompt
-    os.system(f'python {CODE_PATH}/demo.py')
+    os.system(f'python {CODE_PATH}/demo/demo.py')
+    
     for filename in os.listdir(IMAGE_PATH):
         if filename.startswith("0"):
             image_1 = Image.open(IMAGE_PATH + filename)
