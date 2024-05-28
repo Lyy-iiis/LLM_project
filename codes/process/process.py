@@ -18,6 +18,8 @@ parser.add_argument('--data_path', type = str, default = '../data/')
 parser.add_argument('--output_path', type = str, default = '../data/.tmp/process/')
 parser.add_argument('--prompt_path', type = str, default = '../data/.tmp/extract/')
 parser.add_argument('--inprompt_path', type = str, default = '.tmp/inprompt/')
+parser.add_argument('--num_non_char', '-nnc', type = int, default = 1)
+parser.add_argument('--num_char', '-nc', type = int, default = 1)
 
 args = parser.parse_args()
 
@@ -294,26 +296,27 @@ style_prompt += """
 load()
 token_spent = 0
 print(type(MODEL), type(TOKENIZER))
-for (prompt, file_name) in zip(prompts, audio_file_name) :
-  with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
-    inprompt = f.read()
-  messages = [
-      {"role": "system", "content": system_prompt},
-      {"role": "user", "content": inprompt+'\n'+prompt},
-  ]
-  response, tokens = f_response(messages)
-  with open(OUTPUT_PATH + file_name + ".prompt", "w") as f :
-    f.write(response)
-  token_spent += tokens
-  messages = [
-      {"role": "system", "content": style_prompt},
-      {"role": "user", "content": response},
-  ]
-  response, tokens = f_response(messages)
-  token_spent += tokens
-  num = re.findall(r'\b\d+\b', response)[0]
-  with open(OUTPUT_PATH + file_name + ".style", "w") as f :
-    f.write(num)
+for t in range(args.num_char) :
+  for (prompt, file_name) in zip(prompts, audio_file_name) :
+    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+      inprompt = f.read()
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": inprompt+'\n'+prompt},
+    ]
+    response, tokens = f_response(messages)
+    with open(OUTPUT_PATH + file_name + ".prompt" + str(t), "w") as f :
+      f.write(response)
+    token_spent += tokens
+    messages = [
+        {"role": "system", "content": style_prompt},
+        {"role": "user", "content": response},
+    ]
+    response, tokens = f_response(messages)
+    token_spent += tokens
+    num = re.findall(r'\b\d+\b', response)[0]
+    with open(OUTPUT_PATH + file_name + ".style" + str(t), "w") as f :
+      f.write(num)
 
 # print("Token spent:", token_spent)
 
@@ -419,24 +422,25 @@ sunny sky, yellow flowers, swinging on a playground, memories, falling petals, r
 # The second example is DESTRUCTION 3,2,1
 
 # load()
-for (prompt, file_name) in zip(prompts, audio_file_name) :
-  with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
-    inprompt = f.read()
-  messages = [
-      {"role": "system", "content": system_prompt},
-      {"role": "user", "content": inprompt+'\n'+prompt},
-  ]
-  response, tokens = f_response(messages)
-  with open(OUTPUT_PATH + file_name + ".prompt2", "w") as f :
-    f.write(response)
-  token_spent += tokens
-  messages = [
-      {"role": "system", "content": style_prompt},
-      {"role": "user", "content": response},
-  ]
-  response, tokens = f_response(messages)
-  token_spent += tokens
-  num = re.findall(r'\b\d+\b', response)[0]
-  with open(OUTPUT_PATH + file_name + ".style2", "w") as f :
-    f.write(num)
+for t in range(args.num_non_char) :
+  for (prompt, file_name) in zip(prompts, audio_file_name) :
+    with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+      inprompt = f.read()
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": inprompt+'\n'+prompt},
+    ]
+    response, tokens = f_response(messages)
+    with open(OUTPUT_PATH + file_name + ".prompt_nc" + str(t), "w") as f :
+      f.write(response)
+    token_spent += tokens
+    messages = [
+        {"role": "system", "content": style_prompt},
+        {"role": "user", "content": response},
+    ]
+    response, tokens = f_response(messages)
+    token_spent += tokens
+    num = re.findall(r'\b\d+\b', response)[0]
+    with open(OUTPUT_PATH + file_name + ".style_nc" + str(t), "w") as f :
+      f.write(num)
 print("Token spent:", token_spent)

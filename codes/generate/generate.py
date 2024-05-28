@@ -23,6 +23,8 @@ parser.add_argument('--prompt_path', type = str, default = '../data/.tmp/process
 parser.add_argument('--output_path', type = str, default = '../data/.tmp/generate/')
 parser.add_argument('--image_num', type = int, default = 1)
 parser.add_argument('--device_num', type = int, default = 1)
+parser.add_argument('--num_non_char', '-nnc', type = int, default = 1)
+parser.add_argument('--num_char', '-nc', type = int, default = 1)
 
 args = parser.parse_args()
 
@@ -70,8 +72,11 @@ for audio in audio_file_name :
 
 prompt = {}
 for audio in audio_file_name :
-    with open(PROMPT_PATH + audio, "r") as f :
-        prompt[audio] = f.read()
+    for t in range(args.num_char) :
+        prompt_list = []
+        with open(PROMPT_PATH + audio + str(t), "r") as f :
+            prompt_list.append(f.read())
+    prompt[audio] = prompt_list
     # print(prompt[audio])
 
 print("Prompt loaded")
@@ -93,16 +98,17 @@ negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")
-    output = pipe(prompt[audio], 
-                negative_prompt=negative_prompt,
-                num_inference_steps=num_inference_steps, 
-                guidance_scale=guidance_scale,
-                num_images_per_prompt=image_num).images
-    store_path = OUTPUT_PATH + audio[:-7]
-    if not os.path.exists(store_path) :
-        os.makedirs(store_path)
-    for i in range(image_num):
-        output[i].save(store_path + f'/{i}.png')
+    for t in range(args.num_char) :
+        output = pipe(prompt[audio][t], 
+                    negative_prompt=negative_prompt,
+                    num_inference_steps=num_inference_steps, 
+                    guidance_scale=guidance_scale,
+                    num_images_per_prompt=image_num).images
+        store_path = OUTPUT_PATH + audio[:-7]
+        if not os.path.exists(store_path) :
+            os.makedirs(store_path)
+        for i in range(image_num):
+            output[i].save(store_path + f'/{t}-{i}.png')
     print(f"Generated for {audio}")
 
 #######################################################
@@ -120,16 +126,18 @@ with open(DATA_PATH + input_file_name, "r") as f :
         audio_file_name.append(line.rstrip())
 
 # Replace ".mp3" with ".prompt" in audio_file_name
-audio_file_name = [re.sub(r'\.mp3$', '.prompt2', audio) for audio in audio_file_name]
-audio_file_name = [re.sub(r'\.wav$', '.prompt2', audio) for audio in audio_file_name]
+audio_file_name = [re.sub(r'\.mp3$', '.prompt_nc', audio) for audio in audio_file_name]
+audio_file_name = [re.sub(r'\.wav$', '.prompt_nc', audio) for audio in audio_file_name]
 # for audio in audio_file_name :
 #     print(audio)
 
 prompt = {}
 for audio in audio_file_name :
-    with open(PROMPT_PATH + audio, "r") as f :
-        prompt[audio] = f.read()
-    # print(prompt[audio])
+    for t in range(args.num_non_char) :
+        prompt_list = []
+        with open(PROMPT_PATH + audio + str(t), "r") as f :
+            prompt_list.append(f.read())
+    prompt[audio] = prompt_list
 
 print("Prompt loaded")
 
@@ -140,14 +148,15 @@ negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")
-    output = pipe(prompt[audio], 
-                negative_prompt=negative_prompt,
-                num_inference_steps=num_inference_steps, 
-                guidance_scale=guidance_scale,
-                num_images_per_prompt=image_num).images
-    store_path = OUTPUT_PATH + audio[:-8]
-    if not os.path.exists(store_path) :
-        os.makedirs(store_path)
-    for i in range(image_num):
-        output[i].save(store_path + f'/1{i}.png')
+    for t in range(args.num_non_char) :
+        output = pipe(prompt[audio][t], 
+                    negative_prompt=negative_prompt,
+                    num_inference_steps=num_inference_steps, 
+                    guidance_scale=guidance_scale,
+                    num_images_per_prompt=image_num).images
+        store_path = OUTPUT_PATH + audio[:-11]
+        if not os.path.exists(store_path) :
+            os.makedirs(store_path)
+        for i in range(image_num):
+            output[i].save(store_path + f'/nc{t}-{i}.png')
     print(f"Generated for {audio}")
