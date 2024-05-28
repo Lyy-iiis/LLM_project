@@ -1,5 +1,7 @@
 import subprocess
-import torch
+import os
+import subprocess
+import os
 # Define the two Bash commands you want to run concurrently
 bash_command_1 = "/share/ollama/ollama serve"
 bash_command_2 = "/share/ollama/ollama run llama3:70b < /root/LLM_project/codes/process/input.txt > /root/LLM_project/codes/process/output.txt"
@@ -19,25 +21,4 @@ print(f"Command 2 return code: {return_code_2}")
 print(f"Command 2 output: {stdout_2.decode()}")
 print(f"Command 2 error: {stderr_2.decode()}")
 process_1.send_signal(subprocess.signal.SIGINT)
-
-# while (1):
-#     continue
-# exit(1)
-# process_1.wait()
-# os.kill(pid, signal.SIGKILL)
-# print(f"Command 2 error: {stderr_2.decode()}")
-# torch.cuda.empty_cache()
-# if (print(f"Command 2 output: {stdout_2.decode()}") == None):
-#     print("Terminating the first command")
-#     os.kill(pid, signal.SIGKILL)
-
-# Ensure process_1 is fully terminated and collect its outputs and errors
-# print("Waiting for the first command to terminate")
-# stdout_1, stderr_1 = process_1.communicate()
-
-# # Check the return code of process_1
-# print("Collecting the output and error of the first command")
-# return_code_1 = process_1.returncode
-# print(f"Command 1 return code: {return_code_1}")
-# print(f"Command 1 output: {stdout_1.decode()}")
-# print(f"Command 1 error: {stderr_1.decode()}")
+os.system("ps -ef | grep -- '--n-gpu-layers' | awk '{print $2}' | head -n 1 | xargs kill -9")

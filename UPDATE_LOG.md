@@ -1,3 +1,9 @@
+## 24.05.28 16:30 LYY
+
+- Fix the bug in `llama3.py`, now you can use `llama3-70B` model to generate images. However, I don't think we would use it.
+  
+- Add prompt, now more robust.
+
 ## 24.05.27 23:00 LYY
 
 - Update `MI-T_helm_template`, support up-to 32M music file. 
