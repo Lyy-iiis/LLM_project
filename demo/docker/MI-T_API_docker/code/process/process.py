@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 import os
 from zhipuai import ZhipuAI
 import argparse 
-# import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import subprocess
@@ -103,17 +102,6 @@ def f_response(messages) :
     response = outputs[0][input_ids.shape[-1]:]
     return TOKENIZER.decode(response, skip_special_tokens=True), 0
 
-# Ex msg
-#     messages=[
-#         {"role": "user", "content": "作为一名营销专家，请为智谱开放平台创作一个吸引人的slogan"},
-#         {"role": "assistant", "content": "当然，为了创作一个吸引人的slogan，请告诉我一些关于您产品的信息"},
-#         {"role": "user", "content": "智谱AI开放平台"},
-#         {"role": "assistant", "content": "智启未来，谱绘无限一智谱AI，让创新触手可及!"},
-#         {"role": "user", "content": "创造一个更精准、吸引人的slogan"}
-#     ]
-
-##############################################################
-
 def run_llama3_70b(input_file_name, output_file_name):
   server = "/share/ollama/ollama serve"
   user = f"/share/ollama/ollama run llama3:70b < \"{input_file_name}\" > \"{output_file_name}\""
@@ -140,97 +128,19 @@ prompts = []
 for file_name in audio_file_name :
   with open(PROMPT_PATH + file_name + ".prompt", "r") as f :
     prompts.append(f.read())
-# print(prompts)
-
-# Here is the version with both positive and negative prompts
-
-# system_prompt = """
-# You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
-# for this audio. To specify, your prompt should contain and only contain **two parts, 
-# one positive and one negative**, according to the description. Each part should be comprised of some 
-# seperated words or phrases, but not sentences. Note that you should combine the descriptions
-# of all pieces of the music into one pair of prompts. 
-
-# Negative prompt refers to features that
-# you don't want to see in the image. Note that your prompt should be suitable
-# for text-to-image-generation tasks. For example, your prompt should contain items to appear, background 
-# color or people's appearance if needed; but your prompt should not contain descriptions of the audio, 
-# like what instruments occur in the music or tempo, melody of the music; instead you should represent the 
-# emotional information of the audio by imaging proper scenes in the image.
-
-# Here are a few examples of prompts:
-
-# good prompt example1:
-
-# Positive: a man, masterpiece, best quality, high quality
-
-# Negative: text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry
-
-# good prompt example2:
-
-# Positive: detailed and refined, Zero Two from the anime Darling in the Franxx, distinctive pink hair, mesmerizing green eyes, dynamic pose, showcasing her strong and fearless personality, anime style, 8k resolution, 16:9 aspect ratio, battlefield background symbolizing the constant fights she has to face, confident and determined expression, black background
-
-# Negative: text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry
-
-# """
-
-# Here is the version with only positive prompt
-
-# system_prompt = """
-# You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
-# for this audio. 
-
-# **Note that you should combine the descriptions
-# of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
-
-# The prompt should be comprised of some 
-# seperated words or phrases, but not sentences. Note that your prompt should be suitable
-# for text-to-image-generation tasks. 
-
-# For example, your prompt should contain items to appear, background 
-# color, people's appearance if needed, and so on; but your prompt should not contain direct descriptions 
-# of the audio, 
-# like what instruments occur in the music or tempo, melody of the music.
-
-# You can represent the emotional information of the audio by adding proper items to the image. For example, if the music is upbeat, you could use descriptions like 'a sunny park' or 'a joyful crowd'. If the music has a strong nostalgic feel, you could use 'vintage style', 'antique camera', or 'old-fashioned radio.'
-
-# You can also use background color to convey emotional information. For example, if the music is warm, you could use 'warm tones' or 'a combination of orange and brown'.
-
-# Here are a few examples of prompts:
-
-# good prompt example1:
-
-# a man, masterpiece, best quality, high quality
-
-# good prompt example2:
-
-# Zero Two from the anime Darling in the Franxx, detailed and refined, distinctive pink hair, mesmerizing green eyes, dynamic pose, showcasing her strong and fearless personality, anime style, 8k resolution, 16:9 aspect ratio, battlefield background symbolizing the constant fights she has to face, confident and determined expression, black background
-
-# good prompt example3:
-
-# Jay Chou in a fantasy world, playing piano, 8k resolution, 16:9 aspect ratio, 60fps, with a dreamy aesthetic.
-
-# bad prompt example:
-
-# strong beats, female vocalist, pulsing synthesizers, catchy melody
-
-# These prompts are bad because they describe the music directly, rather than the image you want to generate.
-# """
 
 
 system_prompt = """
 You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
 for this audio. 
 
-**Note that you should combine the descriptions
-of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
+**Note that you should combine the descriptions of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
 
-The prompt should be comprised of some seperated words or phrases, but not sentences. 
+The prompt should be comprised of some seperated words or phrases, but not sentences. Besides, don't use any Chinese characters in the prompt even if the audio is in Chinese.
 
-For example, your prompt should contain items to appear, background 
-color, people's appearance if needed, and so on; but your prompt **should not** contain direct descriptions 
-of the audio, such as "strong beats, female vocalist, pulsing synthesizers, catchy melody", or instruments
-like "piano, synthesizer bass, energetic drumming".
+You should try to understand the emotional information of the audio and generate a prompt that conveys this information.
+
+For example, your prompt should contain items to appear, background color, people's appearance if needed, and so on; but your prompt **should not** contain direct descriptions of the audio, such as "strong beats, female vocalist, pulsing synthesizers, catchy melody", or instruments like "piano, synthesizer bass, energetic drumming". The prompt should NOT CONTAIN MORE THAN ONE CHARACTER, "couples walk together in the park", "a group of friends having a picnic" is forbidden. UNLESS USER SPECIFICALLY ASKED FOR IT.
 
 You can represent the emotional information of the audio by adding proper items to the image. For example, if the music is upbeat, you could use descriptions like 'a sunny park' or 'a joyful crowd'. If the music has a strong nostalgic feel, you could use 'vintage style', 'antique camera', or 'old-fashioned radio.'
 
@@ -271,7 +181,54 @@ When you crash and burn
 
 <output>: vibrant and dynamic scene with a central figure, anime-style character, anime fashion, a girl with with long flowing golden hair, winter outfit, red hooded jacket with white fur trim at the collar and cuffs, a warm look, left hand holding a basket, focused gaze, one eye visible and the other obscured by the hair, a determined or intense expression, various abstract shapes and elements in background, shades of orange yellow and red, sense of fire or energy, moon, circles of light scattered throughout, mystical atmosphere, 8k resolution, 16:9 aspect ratio, 60fps
 
-<example2>:
+<example 2>
+
+<input>: The name of the audio is 晴天.
+
+<output>: This music is cut into 11 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
+Description piece 1: This is a song whose genre is Pop, and the lyrics are "故事的小黄花".
+Description piece 2: This is a song whose genre is Pop, and the lyrics are "童年的荡秋千 随记忆一直晃到现在 吹着前奏望着天空".
+Description piece 3: This is a song whose genre is Pop, and the lyrics are "我想起花瓣试着掉落 为你翘课的那一天 花落的那一天 教室的那一间 我怎么看不见 消失的下雨天 我好想再淋一遍".
+Description piece 4: This is a song whose genre is Pop, and the lyrics are "没想到失去的勇气我还留着 好想再问一遍 你会等待还是离开 刮风这天 我试过握着你手 但偏偏 雨渐渐 大到我看你不见".
+Description piece 5: This is a song whose genre is Pop, and the lyrics are "在你身边的那幅风景的那天 也许我会比较好一点 从前从前 有个人爱你很久 但渐渐风渐渐把距离吹的好远 好不容易 我们再多爱一天".
+Description piece 6: This is a song whose genre is Pop, and the lyrics are "还要多久 我才能在你身边
+等到放晴的那天 也许我会比较好一点 从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天 但故事的最后 你好像还是说了拜拜".
+Description piece 7: This is a song whose genre is Pop, and the lyrics are "刮风这天 我试过握着你手".
+Description piece 8: This is a song whose genre is Pop, and the lyrics are "但偏偏 雨渐渐 大到我看你不见 还要多久 我才能够在你身边 等到放晴的那天 也许 我会比较好一点".
+Description piece 9: This is a song whose genre is Pop, and the lyrics are "等到放晴的那天 也许 我会比较好一点 从前从前 有个人爱你很久".
+Description piece 10: This is a song whose genre is Pop, and the lyrics are "等到放晴的那天 也许 我会比较好一点 从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天".
+Description piece 11: This is a song whose genre is Pop, and the lyrics are "从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天 但故事的最后 你好像还是说了拜拜".
+
+The lyrics are as follows:
+故事的小黄花 从出生那年就飘着
+童年的荡秋千 随记忆一直晃到现在
+吹着前奏望着天空
+我想起花瓣试着掉落
+为你翘课的那一天 花落的那一天
+教室的那一间 我怎么看不见
+消失的下雨天 我好想再淋一遍
+没想到失去的勇气我还留着
+好想再问一遍 你会等待还是离开
+刮风这天 我试过握着你手
+但偏偏 雨渐渐 大到我看你不见
+还要多久 我才能在你身边
+等到放晴的那天 也许我会比较好一点
+从前从前 有个人爱你很久
+但偏偏 风渐渐 把距离吹得好远
+好不容易 又能再多爱一天
+但故事的最后 你好像还是说了拜拜
+刮风这天 我试过握着你手
+但偏偏 雨渐渐 大到我看你不见
+还要多久 我才能够在你身边
+等到放晴的那天 也许 我会比较好一点
+从前从前 有个人爱你很久
+但偏偏 风渐渐 把距离吹得好远
+好不容易 又能再多爱一天
+但故事的最后 你好像还是说了拜拜
+
+sunny day, yellow flowers, Swing set, blowing wind, falling petals, classroom, rainy day, courage, hands held, obscured by rain, waiting, clear skies, distant love, blowing wind, separation, reunion, goodbye, emotional atmosphere, vibrant colors, 8k resolution, 16:9 aspect ratio, 60fps.
+
+<example3>:
 
 <input>: The name of the audio is "infinity heaven". Please generate an image of 8k resolution, 16:9 aspect ratio, 60fps. Animation style.
 
@@ -364,18 +321,15 @@ for (prompt, file_name) in zip(prompts, audio_file_name) :
 # prompt for generating image with no character
 
 system_prompt = """
-You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation 
-for this audio. 
+You are a chatbot that summarizes a description of an audio to generate a prompt for image-generation  for this audio. 
 
-**Note that you should combine the descriptions
-of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
+**Note that you should combine the descriptions of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
 
-The prompt should be comprised of some seperated words or phrases, but not sentences. And here the key point is that the image **should not contain any character**!
+You should try to understand the emotional information of the audio and generate a prompt that conveys this information.
 
-For example, your prompt should contain background color, items to appear, their color or features, and so on; but your prompt **should not** contain direct descriptions 
-of the audio, such as "strong beats, female vocalist, pulsing synthesizers, catchy melody", or instruments
-like "piano, synthesizer bass, energetic drumming". The prompt should not contain any character as well, such as "a girl dressed in red, holding a blanket",
-"angel with white wings", "a robot with a sword" and so on.
+The prompt should be comprised of some seperated words or phrases, but not sentences. And here the key point is that the image **should not contain any character**! Besides, don't use any Chinese characters in the prompt even if the audio is in Chinese.
+
+For example, your prompt should contain background color, items to appear, their color or features, and so on; but your prompt **should not** contain direct descriptions of the audio, such as "strong beats, female vocalist, pulsing synthesizers, catchy melody", or instruments like "piano, synthesizer bass, energetic drumming". The prompt should NOT CONTAIN ANY HUMAN as well, such as "a girl dressed in red, holding a blanket", "angel with white wings", "a robot with a sword" and so on.
 
 You can represent the emotional information of the audio by adding proper items to the image. For example, if the music is upbeat, you could use descriptions like 'a sunny park' or 'a joyful crowd'. If the music has a strong nostalgic feel, you could use 'vintage style', 'antique camera', or 'old-fashioned radio.'
 
@@ -414,6 +368,52 @@ Description piece 7: A high energy, powerful and aggressive metal track. This is
 
 <output>: abstract graphical elements throughout the image that resemble digital glitches, distortion effects, shades of blue and purple with some pink highlights, feeling of coolness and futurism, gradient transitioning from dark at the top to lighter colors towards the bottom, space-like or digital atmosphere, a slender beam of light on the right running vertically downwards, ray of hope or contrast, dynamic and chaotic, rapid movement, information overload, digital apocalypse, 8k resolution, 16:9 aspect ratio, 60fps
 
+<example 3>
+
+<input>: The name of the audio is 晴天.
+
+<output>: This music is cut into 11 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
+Description piece 1: This is a song whose genre is Pop, and the lyrics are "故事的小黄花".
+Description piece 2: This is a song whose genre is Pop, and the lyrics are "童年的荡秋千 随记忆一直晃到现在 吹着前奏望着天空".
+Description piece 3: This is a song whose genre is Pop, and the lyrics are "我想起花瓣试着掉落 为你翘课的那一天 花落的那一天 教室的那一间 我怎么看不见 消失的下雨天 我好想再淋一遍".
+Description piece 4: This is a song whose genre is Pop, and the lyrics are "没想到失去的勇气我还留着 好想再问一遍 你会等待还是离开 刮风这天 我试过握着你手 但偏偏 雨渐渐 大到我看你不见".
+Description piece 5: This is a song whose genre is Pop, and the lyrics are "在你身边的那幅风景的那天 也许我会比较好一点 从前从前 有个人爱你很久 但渐渐风渐渐把距离吹的好远 好不容易 我们再多爱一天".
+Description piece 6: This is a song whose genre is Pop, and the lyrics are "还要多久 我才能在你身边
+等到放晴的那天 也许我会比较好一点 从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天 但故事的最后 你好像还是说了拜拜".
+Description piece 7: This is a song whose genre is Pop, and the lyrics are "刮风这天 我试过握着你手".
+Description piece 8: This is a song whose genre is Pop, and the lyrics are "但偏偏 雨渐渐 大到我看你不见 还要多久 我才能够在你身边 等到放晴的那天 也许 我会比较好一点".
+Description piece 9: This is a song whose genre is Pop, and the lyrics are "等到放晴的那天 也许 我会比较好一点 从前从前 有个人爱你很久".
+Description piece 10: This is a song whose genre is Pop, and the lyrics are "等到放晴的那天 也许 我会比较好一点 从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天".
+Description piece 11: This is a song whose genre is Pop, and the lyrics are "从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天 但故事的最后 你好像还是说了拜拜".
+
+The lyrics are as follows:
+故事的小黄花 从出生那年就飘着
+童年的荡秋千 随记忆一直晃到现在
+吹着前奏望着天空
+我想起花瓣试着掉落
+为你翘课的那一天 花落的那一天
+教室的那一间 我怎么看不见
+消失的下雨天 我好想再淋一遍
+没想到失去的勇气我还留着
+好想再问一遍 你会等待还是离开
+刮风这天 我试过握着你手
+但偏偏 雨渐渐 大到我看你不见
+还要多久 我才能在你身边
+等到放晴的那天 也许我会比较好一点
+从前从前 有个人爱你很久
+但偏偏 风渐渐 把距离吹得好远
+好不容易 又能再多爱一天
+但故事的最后 你好像还是说了拜拜
+刮风这天 我试过握着你手
+但偏偏 雨渐渐 大到我看你不见
+还要多久 我才能够在你身边
+等到放晴的那天 也许 我会比较好一点
+从前从前 有个人爱你很久
+但偏偏 风渐渐 把距离吹得好远
+好不容易 又能再多爱一天
+但故事的最后 你好像还是说了拜拜
+
+sunny sky, yellow flowers, swinging on a playground, memories, falling petals, rainy day, wind, hidden visibility, waiting for clear skies, emotional distance, love story, courage, 8k resolution, 16:9 aspect ratio, 60fps
 """
 
 # The second example is DESTRUCTION 3,2,1

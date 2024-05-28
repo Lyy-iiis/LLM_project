@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 import os
 from zhipuai import ZhipuAI
 import argparse 
-import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import subprocess

@@ -2,17 +2,11 @@
 ########################################################
 
 from diffusers import DiffusionPipeline
-# from diffusers import EDMDPMSolverMultistepScheduler
-# from diffusers import StableDiffusionXLPipeline
-# from pydub import AudioSegment
-# from transformers import AutoModelForCausalLM, AutoTokenizer
-# from transformers.generation import GenerationConfig
 import torch
 import os
 torch.manual_seed(42)
-# from pydub import AudioSegment
+
 import argparse 
-# import warnings
 import torch
 import re
 
@@ -83,11 +77,9 @@ for audio in audio_file_name :
 print("Prompt loaded")
 print("Loading model")
 
-# os.system(f'ls -l {MODEL_PATH + MODEL}/')
 pipe = DiffusionPipeline.from_pretrained(
     MODEL_PATH + MODEL + '/',
-    # custom_pipeline = "/root/LLM_project/codes/generate/lpw_stable_diffusion_xl.py",
-    custom_pipeline = "/ssdshare/MI-T/lpw_stable_diffusion_xl.py",
+    custom_pipeline = "/root/LLM_project/codes/generate/lpw_stable_diffusion_xl.py",
     torch_dtype=torch.float16,
     variant="fp16",
 ).to("cuda")
@@ -97,7 +89,7 @@ print("Model loaded")
 num_inference_steps = 50
 guidance_scale = 7.5
 image_num = args.image_num
-negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry, piano"
+negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry"
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")
@@ -140,21 +132,11 @@ for audio in audio_file_name :
     # print(prompt[audio])
 
 print("Prompt loaded")
-# print("Loading model")
-
-# pipe = DiffusionPipeline.from_pretrained(
-#     MODEL_PATH + MODEL + '/',
-#     custom_pipeline = "/root/LLM_project/codes/generate/lpw_stable_diffusion_xl.py",
-#     torch_dtype=torch.float16,
-#     variant="fp16",
-# ).to("cuda")
-
-# print("Model loaded")
 
 # num_inference_steps = 50
 # guidance_scale = 7.5
 # image_num = args.image_num
-negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry, character, people, robot, piano"
+negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry, character, people, robot, human, couple, woman, man, child, baby, boy, girl, kid, adult, old, young"
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")

@@ -1,8 +1,6 @@
 import subprocess
 import os
-import subprocess
-import os
-# Define the two Bash commands you want to run concurrently
+
 bash_command_1 = "/share/ollama/ollama serve"
 bash_command_2 = "/share/ollama/ollama run llama3:70b < /root/LLM_project/codes/process/input.txt > /root/LLM_project/codes/process/output.txt"
 
