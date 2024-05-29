@@ -119,6 +119,7 @@ for music in name:
         elif len(pic) == 9:
             map[music][pic] = style_file_name[music][1]
         else :
+            print(pic)
             assert False, "You should not ask for more than 10 pictures one time"
     style_file_name[music].pop(0)
     style_file_name[music].pop(0)

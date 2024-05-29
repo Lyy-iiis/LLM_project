@@ -373,50 +373,17 @@ Description piece 7: A high energy, powerful and aggressive metal track. This is
 
 <example 3>
 
-<input>: The name of the audio is 晴天.
+<input>: Please generate an image for the music according to the following description.
 
-<output>: This music is cut into 11 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
-Description piece 1: This is a song whose genre is Pop, and the lyrics are "故事的小黄花".
-Description piece 2: This is a song whose genre is Pop, and the lyrics are "童年的荡秋千 随记忆一直晃到现在 吹着前奏望着天空".
-Description piece 3: This is a song whose genre is Pop, and the lyrics are "我想起花瓣试着掉落 为你翘课的那一天 花落的那一天 教室的那一间 我怎么看不见 消失的下雨天 我好想再淋一遍".
-Description piece 4: This is a song whose genre is Pop, and the lyrics are "没想到失去的勇气我还留着 好想再问一遍 你会等待还是离开 刮风这天 我试过握着你手 但偏偏 雨渐渐 大到我看你不见".
-Description piece 5: This is a song whose genre is Pop, and the lyrics are "在你身边的那幅风景的那天 也许我会比较好一点 从前从前 有个人爱你很久 但渐渐风渐渐把距离吹的好远 好不容易 我们再多爱一天".
-Description piece 6: This is a song whose genre is Pop, and the lyrics are "还要多久 我才能在你身边
-等到放晴的那天 也许我会比较好一点 从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天 但故事的最后 你好像还是说了拜拜".
-Description piece 7: This is a song whose genre is Pop, and the lyrics are "刮风这天 我试过握着你手".
-Description piece 8: This is a song whose genre is Pop, and the lyrics are "但偏偏 雨渐渐 大到我看你不见 还要多久 我才能够在你身边 等到放晴的那天 也许 我会比较好一点".
-Description piece 9: This is a song whose genre is Pop, and the lyrics are "等到放晴的那天 也许 我会比较好一点 从前从前 有个人爱你很久".
-Description piece 10: This is a song whose genre is Pop, and the lyrics are "等到放晴的那天 也许 我会比较好一点 从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天".
-Description piece 11: This is a song whose genre is Pop, and the lyrics are "从前从前 有个人爱你很久 但偏偏 风渐渐 把距离吹得好远 好不容易 又能再多爱一天 但故事的最后 你好像还是说了拜拜".
+This music is cut into 6 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
+Description piece 1: This is a high energy electronic dance music piece with a strong beat and catchy melodies. It is perfect for use in action movies, video games, and dance clubs. The instruments used are synthesizers, electric guitars, and drums. The mood of this piece is energetic and exciting. It would be perfect for a scene where the main character is running through a city, chasing after a villain.
+Description piece 2: This is a high-energy electronic track with a strong emphasis on drums and percussion. The bassline is punchy and repetitive, while the lead melody is complex and fast-paced. The track has a strong dance feel and would be suitable for use in a club or festival setting. Overall, the mood of this track is energetic and upbeat.
+Description piece 3: This is a dynamic and intense electronic track featuring powerful synthesizers, pounding drums, and intense sound effects. The music is energetic and powerful, with a driving beat and a sense of urgency. The track is perfect for action scenes, sports, and other high-energy content. It is also suitable for use in video games, trailers, and other media projects that require a powerful and intense soundtrack.
+Description piece 4: This is a high-energy electronic dance music piece. The tempo is fast with a strong beat and keyboard harmony. The music is energetic and intense. The piece could be used in the soundtrack of an action movie or video game.
+Description piece 5: This is a high-energy, upbeat electronic dance music (EDM) track. The tempo is fast with a relentless drum beat, intense synthesizer riffs, and a male vocal shouting. The atmosphere is energetic, intense, and euphoric. This track is perfect for action movies, video games, and sports videos.
+Description piece 6: This is a high energy, intense and uplifting dance track. It has a powerful and energetic beat, strong bass, synth leads, powerful and loud drums, catchy melodies and powerful vocals. It is a perfect fit for action, extreme sports, video games, trailers, teasers, intro, and other high impact projects.
 
-The lyrics are as follows:
-故事的小黄花 从出生那年就飘着
-童年的荡秋千 随记忆一直晃到现在
-吹着前奏望着天空
-我想起花瓣试着掉落
-为你翘课的那一天 花落的那一天
-教室的那一间 我怎么看不见
-消失的下雨天 我好想再淋一遍
-没想到失去的勇气我还留着
-好想再问一遍 你会等待还是离开
-刮风这天 我试过握着你手
-但偏偏 雨渐渐 大到我看你不见
-还要多久 我才能在你身边
-等到放晴的那天 也许我会比较好一点
-从前从前 有个人爱你很久
-但偏偏 风渐渐 把距离吹得好远
-好不容易 又能再多爱一天
-但故事的最后 你好像还是说了拜拜
-刮风这天 我试过握着你手
-但偏偏 雨渐渐 大到我看你不见
-还要多久 我才能够在你身边
-等到放晴的那天 也许 我会比较好一点
-从前从前 有个人爱你很久
-但偏偏 风渐渐 把距离吹得好远
-好不容易 又能再多爱一天
-但故事的最后 你好像还是说了拜拜
-
-sunny sky, yellow flowers, swinging on a playground, memories, falling petals, rainy day, wind, hidden visibility, waiting for clear skies, emotional distance, love story, courage, 8k resolution, 16:9 aspect ratio, 60fps
+<output>: surreal and atmospheric quality, night scene, a crescent moon, bathes the landscape in a soft reddish glow, a traditional Japanese torii gate illuminated from behind, casting a warm yellow light, contrast with the surrounding darkness, a cluster of bamboo trees, a temple complex highlighted by the ambient lighting, sense of depth and mystique, vibrant streaks of neon green and blue dancing across the dark background, digital glitches or stylized clouds or spirits, sense of motion and otherworldliness, serene fantasy, traditional Japanese architecture, modern cybernetic aesthetic, dreamlike nocturnal tableau, 8k resolution, 16:9 aspect ratio, 60fps
 """
 
 # The second example is DESTRUCTION 3,2,1

@@ -1,3 +1,11 @@
+## 24.05.29 22:00 SQA
+
+- modify prompt for non-character image generation.
+
+- During testing I found that the 10th style image (Realms) is bad. Someone should replace it with a better one.
+
+- Qwen is fucking every time. What can I say
+
 ## 24.05.29 16:20 SQA
 
 - fix some bugs, now can support multi-prompt generation.
