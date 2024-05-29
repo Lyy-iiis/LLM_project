@@ -154,7 +154,7 @@ for audio in audio_file_name :
                     num_inference_steps=num_inference_steps, 
                     guidance_scale=guidance_scale,
                     num_images_per_prompt=image_num).images
-        store_path = OUTPUT_PATH + audio[:-11]
+        store_path = OUTPUT_PATH + audio[:-10]
         if not os.path.exists(store_path) :
             os.makedirs(store_path)
         for i in range(image_num):
