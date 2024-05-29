@@ -88,7 +88,7 @@ if args.style == 'see list':
 else:
     style_file_name["specified"].append(args.style)
 
-print("style_file_name:",style_file_name) # a dictionary
+# print("style_file_name:",style_file_name) # a dictionary
 
 # tmp = {}
 # for music in name:
@@ -123,7 +123,7 @@ for music in name:
     style_file_name[music].pop(0)
     style_file_name[music].pop(0)
 
-print("map:", map)
+# print("map:", map)
 
 # for content, style in zip(input_file_name, style_file_name):
 for music in name:

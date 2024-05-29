@@ -1,3 +1,7 @@
+## 24.05.29 16:20 SQA
+
+- fix some bugs, now can support multi-prompt generation.
+
 ## 24.05.29 9:20 SQA
 
 - fix some bugs, now `main.ipynb` can run without error.
