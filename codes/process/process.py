@@ -158,7 +158,6 @@ def binary_ask(i,j,inprompt, prompt):
     ]
     response, tokens = f_response(messages)
     number = re.findall(r'\d+', response)[0]
-    print(number)
     if number != '1' and number != '2':
         binary_ask(i,j,inprompt, prompt)
     return int(number), tokens
@@ -175,6 +174,7 @@ def get_style(prompt, inprompt):
     best = best[::2]
     total_tokens += tokens
   # print(total_tokens, best[0])
+  print(best[0])
   return best[0], total_tokens
 
 load()
