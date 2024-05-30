@@ -1,3 +1,13 @@
+## 24.05.30 17:30 LYY
+
+- Change the way of generating style image. Instead of directly choose from 20 style descriptions, we use binary search among all the style descriptions to find the most similar one. The result is incredibly stable and more semantically correct.
+
+- Remove some style images.
+
+- Put prompt into individual files. Code becomes more readable.
+
+- Exist problem: during process, model too concentrate on the user input, but not the music. We need to find a way to balance them.
+
 ## 24.05.29 22:00 SQA
 
 - modify prompt for non-character image generation.
