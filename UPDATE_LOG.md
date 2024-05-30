@@ -1,3 +1,9 @@
+## 24.05.30 23:00 LYY
+
+- Change `demo/demo.py`, `demo/generateAPI.py`, `demo/generateUI.py`. Now support our new method of generating style image. Set default `num_non_char` and `num_char` to 2, which means 4 photos in total.
+
+- Modify a stupid bug in `process.py`, now binary search correctly.
+
 ## 24.05.30 17:30 LYY
 
 - Change the way of generating style image. Instead of directly choose from 20 style descriptions, we use binary search among all the style descriptions to find the most similar one. The result is incredibly stable and more semantically correct.

@@ -203,11 +203,34 @@ for t in range(args.num_char) :
 # prompt for generating image with no character
 
 system_prompt = ""
-with open("./process/prompt", "r") as f:
+with open(PROCESS_PATH+"prompt", "r") as f:
   system_prompt = f.read()
 # The second example is DESTRUCTION 3,2,1
 
 # load()
+# for t in range(args.num_non_char) :
+#   for (prompt, file_name) in zip(prompts, audio_file_name) :
+#     with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
+#       inprompt = f.read()
+#     messages = [
+#         {"role": "system", "content": system_prompt},
+#         {"role": "user", "content": inprompt+'\n'+prompt},
+#     ]
+#     response, tokens = f_response(messages)
+#     with open(OUTPUT_PATH + file_name + ".prompt_nc" + str(t), "w") as f :
+#       f.write(response)
+#     token_spent += tokens
+#     messages = [
+#         {"role": "system", "content": style_prompt},
+#         {"role": "user", "content": response},
+#     ]
+#     response, tokens = f_response(messages)
+#     token_spent += tokens
+#     num = re.findall(r'\b\d+\b', response)[0]
+#     with open(OUTPUT_PATH + file_name + ".style_nc" + str(t), "w") as f :
+#       f.write(num)
+# print("Token spent:", token_spent)
+
 for t in range(args.num_non_char) :
   for (prompt, file_name) in zip(prompts, audio_file_name) :
     with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
@@ -220,13 +243,9 @@ for t in range(args.num_non_char) :
     with open(OUTPUT_PATH + file_name + ".prompt_nc" + str(t), "w") as f :
       f.write(response)
     token_spent += tokens
-    messages = [
-        {"role": "system", "content": style_prompt},
-        {"role": "user", "content": response},
-    ]
-    response, tokens = f_response(messages)
+    num, tokens = get_style(response,inprompt)
     token_spent += tokens
-    num = re.findall(r'\b\d+\b', response)[0]
     with open(OUTPUT_PATH + file_name + ".style_nc" + str(t), "w") as f :
-      f.write(num)
+      f.write(num.__str__())
+
 print("Token spent:", token_spent)
