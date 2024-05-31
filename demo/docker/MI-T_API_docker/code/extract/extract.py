@@ -112,7 +112,13 @@ def extract(file_name, device = 0, path = MUSIC_PATH) :
     #     {'text': 'Is the lyrics you have extracted meaningful and correct? If it isn\'t, please say "NOLYRICS".'},
     # ])
     # meaningful, _ = models[device].chat(tokenizer, query = query, history = _, system = SYSTEM_PROMPT)
-    lyrics = lyrics.split('"')[1]
+    # lyrics = lyrics.split('"')[1]
+    split_lyrics = lyrics.split('"')
+    if len(split_lyrics) > 1:
+        lyrics = split_lyrics[1]
+    else:
+        print("No second element found in split lyrics", lyrics)
+        lyrics = ""
     if not meaningful_lyrics(lyrics) :# or "NOLYRICS" in meaningful:
         lyrics = None
     return decription, lyrics # + "\n meaningful: " + meaningful

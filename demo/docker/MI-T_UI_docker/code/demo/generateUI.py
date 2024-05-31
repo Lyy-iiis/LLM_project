@@ -1,9 +1,9 @@
 import gradio as gr
 import requests
 import json
+import os
 from io import  BytesIO
 import base64
-import os
 from PIL import Image
 
 API_SERVER_URL = os.environ["API_URL"]
@@ -20,19 +20,19 @@ def generate(music, prompt):
     response = requests.post(API_SERVER_URL, data=encoded).json()
 
     # load response from model
-    encoded_image_1 = json.loads(response)['image_1']
-    encoded_image_2 = json.loads(response)['image_2']
-    # description = json.loads(response)['text']
-    byte_arr_1 = base64.decodebytes(encoded_image_1.encode('ascii'))
-    png_1 = Image.open(BytesIO(byte_arr_1))
-    byte_arr_2 = base64.decodebytes(encoded_image_2.encode('ascii'))
-    png_2 = Image.open(BytesIO(byte_arr_2))
+    encoded_image = {}
+    byte_arr = {}
+    png = {}
 
-    return png_1, png_2
+    for i in range(4):
+        encoded_image[i] = json.loads(response)[f'{i}']
+        byte_arr[i] = base64.decodebytes(encoded_image[i].encode('ascii'))
+        png[i] = Image.open(BytesIO(byte_arr[i]))
+
+    return png[0], png[1], png[2], png[3]
 
 gr.Interface(generate,
              inputs=[gr.Audio("Music"), "text"],
-             outputs=[gr.Image(label="Image 1"), gr.Image(label="Image 2")],
-                    #   gr.Textbox(label="description", lines=3)]
+             outputs=[gr.Image(label="Image 1"), gr.Image(label="Image 2"),
+                      gr.Image(label="Image 3"), gr.Image(label="Image 4")],
             ).launch(server_name="0.0.0.0")
-            # ).queue(default_concurrency_limit=50).launch(server_name="0.0.0.0", share=True, max_threads=50)

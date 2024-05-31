@@ -23,6 +23,8 @@ parser.add_argument('--prompt_path', type = str, default = '../data/.tmp/process
 parser.add_argument('--output_path', type = str, default = '../data/.tmp/generate/')
 parser.add_argument('--image_num', type = int, default = 1)
 parser.add_argument('--device_num', type = int, default = 1)
+parser.add_argument('--num_non_char', '-nnc', type = int, default = 1)
+parser.add_argument('--num_char', '-nc', type = int, default = 1)
 
 args = parser.parse_args()
 
@@ -62,6 +64,8 @@ with open(DATA_PATH + input_file_name, "r") as f :
     for line in f :
         audio_file_name.append(line.rstrip())
 
+ori_audio_file_name = audio_file_name
+
 # Replace ".mp3" with ".prompt" in audio_file_name
 audio_file_name = [re.sub(r'\.mp3$', '.prompt', audio) for audio in audio_file_name]
 audio_file_name = [re.sub(r'\.wav$', '.prompt', audio) for audio in audio_file_name]
@@ -70,8 +74,11 @@ for audio in audio_file_name :
 
 prompt = {}
 for audio in audio_file_name :
-    with open(PROMPT_PATH + audio, "r") as f :
-        prompt[audio] = f.read()
+    prompt_list = []
+    for t in range(args.num_char) :
+        with open(PROMPT_PATH + audio + str(t), "r") as f :
+            prompt_list.append(f.read())
+    prompt[audio] = prompt_list
     # print(prompt[audio])
 
 print("Prompt loaded")
@@ -79,7 +86,8 @@ print("Loading model")
 
 pipe = DiffusionPipeline.from_pretrained(
     MODEL_PATH + MODEL + '/',
-    custom_pipeline = "/root/LLM_project/codes/generate/lpw_stable_diffusion_xl.py",
+    # custom_pipeline = "/root/LLM_project/codes/generate/lpw_stable_diffusion_xl.py",
+    custom_pipeline = "/ssdshare/MI-T/lpw_stable_diffusion_xl.py",
     torch_dtype=torch.float16,
     variant="fp16",
 ).to("cuda")
@@ -93,16 +101,17 @@ negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")
-    output = pipe(prompt[audio], 
-                negative_prompt=negative_prompt,
-                num_inference_steps=num_inference_steps, 
-                guidance_scale=guidance_scale,
-                num_images_per_prompt=image_num).images
-    store_path = OUTPUT_PATH + audio[:-7]
-    if not os.path.exists(store_path) :
-        os.makedirs(store_path)
-    for i in range(image_num):
-        output[i].save(store_path + f'/{i}.png')
+    for t in range(args.num_char) :
+        output = pipe(prompt[audio][t], 
+                    negative_prompt=negative_prompt,
+                    num_inference_steps=num_inference_steps, 
+                    guidance_scale=guidance_scale,
+                    num_images_per_prompt=image_num).images
+        store_path = OUTPUT_PATH + audio[:-7]
+        if not os.path.exists(store_path) :
+            os.makedirs(store_path)
+        for i in range(image_num):
+            output[i].save(store_path + f'/{t}-{i}.png')
     print(f"Generated for {audio}")
 
 #######################################################
@@ -110,28 +119,33 @@ for audio in audio_file_name :
 # Now generate from .prompt2
 
 # load prompt from file
-print("Generating image without characters")
-print("Loading prompt from file")
+if args.num_non_char > 0 :
+    print("Loading prompt from file")
+    print("Generating image without characters")    
 
-audio_file_name = []
-input_file_name = args.input_file_name
-with open(DATA_PATH + input_file_name, "r") as f :
-    for line in f :
-        audio_file_name.append(line.rstrip())
+
+audio_file_name = ori_audio_file_name
+# input_file_name = args.input_file_name
+# with open(DATA_PATH + input_file_name, "r") as f :
+#     for line in f :
+#         audio_file_name.append(line.rstrip())
 
 # Replace ".mp3" with ".prompt" in audio_file_name
-audio_file_name = [re.sub(r'\.mp3$', '.prompt2', audio) for audio in audio_file_name]
-audio_file_name = [re.sub(r'\.wav$', '.prompt2', audio) for audio in audio_file_name]
+audio_file_name = [re.sub(r'\.mp3$', '.prompt_nc', audio) for audio in audio_file_name]
+audio_file_name = [re.sub(r'\.wav$', '.prompt_nc', audio) for audio in audio_file_name]
 # for audio in audio_file_name :
 #     print(audio)
 
 prompt = {}
 for audio in audio_file_name :
-    with open(PROMPT_PATH + audio, "r") as f :
-        prompt[audio] = f.read()
-    # print(prompt[audio])
+    prompt_list = []
+    for t in range(args.num_non_char) :
+        with open(PROMPT_PATH + audio + str(t), "r") as f :
+            prompt_list.append(f.read())
+    prompt[audio] = prompt_list
 
-print("Prompt loaded")
+if args.num_non_char > 0 :
+    print("Prompt loaded")
 
 # num_inference_steps = 50
 # guidance_scale = 7.5
@@ -140,14 +154,15 @@ negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")
-    output = pipe(prompt[audio], 
-                negative_prompt=negative_prompt,
-                num_inference_steps=num_inference_steps, 
-                guidance_scale=guidance_scale,
-                num_images_per_prompt=image_num).images
-    store_path = OUTPUT_PATH + audio[:-8]
-    if not os.path.exists(store_path) :
-        os.makedirs(store_path)
-    for i in range(image_num):
-        output[i].save(store_path + f'/1{i}.png')
+    for t in range(args.num_non_char) :
+        output = pipe(prompt[audio][t], 
+                    negative_prompt=negative_prompt,
+                    num_inference_steps=num_inference_steps, 
+                    guidance_scale=guidance_scale,
+                    num_images_per_prompt=image_num).images
+        store_path = OUTPUT_PATH + audio[:-10]
+        if not os.path.exists(store_path) :
+            os.makedirs(store_path)
+        for i in range(image_num):
+            output[i].save(store_path + f'/nc{t}-{i}.png')
     print(f"Generated for {audio}")

@@ -1,3 +1,7 @@
+## 24.05.31 9:30 LYY
+
+- Build new docker, really exhausted. Please read the `README.md` for new docker details. I strongly suggest that before building the docker, test the code locally with enough patience.
+
 ## 24.05.30 23:00 LYY
 
 - Change `demo/demo.py`, `demo/generateAPI.py`, `demo/generateUI.py`. Now support our new method of generating style image. Set default `num_non_char` and `num_char` to 2, which means 4 photos in total.

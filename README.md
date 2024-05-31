@@ -55,6 +55,19 @@ in two terminals, then open the browser and visit http://localhost:7860/ to see 
 
 ### Docker
 
+If you don't want to build a docker, you can change `IngressHost` and `NameSpace` in `project_lyy.yaml` into yours and use the docker we already built by running the following command.
+
+```bash
+cd demo/docker/MI-T_helm_template
+make our
+make connect
+```
+
+
+
+
+Before building the docker, please download pretrained model from https://download.pytorch.org/models/vgg19-dcbb9e9d.pth and put it in `demo/docker/MI-T_API_docker/`.
+
 Build the docker:
 
 ```bash

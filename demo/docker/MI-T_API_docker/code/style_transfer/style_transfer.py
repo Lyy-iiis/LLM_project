@@ -33,6 +33,8 @@ parser.add_argument('--gray', '-g', action='store_true')
 parser.add_argument('--color_preserve', '-c_p', action='store_true', help = "doesn't work if gray is True")
 parser.add_argument('--luminance_only', '-l_o', action='store_true', help = "doesn't work if gray is True")
 parser.add_argument('--lr', '-lr', type=float, default=1)
+parser.add_argument('--num_non_char', '-nnc', type = int, default = 1)
+parser.add_argument('--num_char', '-nc', type = int, default = 1)
 args = parser.parse_args()
 
 ############################################################################
@@ -68,82 +70,115 @@ if args.content == 'see list':
 else:
     input_file_name.append(args.content)
 
-style_file_name = []
+# print("input_file_name:",input_file_name) # a dictionary
+
+# print("name:",name) # contains the name of input music, without the suffix
+
+style_file_name = {}
 if args.style == 'see list':
     for fname in name :
-        with open(DATA_PATH + '.tmp/process/' + fname + '.style', "r") as f :
-            style_file_name.append(f.readline().rstrip())
-        with open(DATA_PATH + '.tmp/process/' + fname + '.style2', "r") as f :
-            style_file_name.append(f.readline().rstrip())
-        style_file_name = [x + '.png' for x in style_file_name]
+        style_file_name[fname] = []
+        for t in range(args.num_char) :
+            with open(DATA_PATH + '.tmp/process/' + fname + '.style' + str(t), "r") as f :
+                style_file_name[fname].append(f.readline().rstrip())
+        for t in range(args.num_non_char) :
+            with open(DATA_PATH + '.tmp/process/' + fname + '.style_nc' + str(t), "r") as f :
+                style_file_name[fname].append(f.readline().rstrip())
+        style_file_name[fname] = [x + '.png' for x in style_file_name[fname]]
 else:
-    style_file_name.append(args.style)
+    style_file_name["specified"].append(args.style)
 
-tmp = {}
-for music in name:
-    tmp[music] = []
-    for pic in input_file_name[x]:
-        if len(pic) == 5:
-            tmp[music].append(style_file_name[0])
-        elif len(pic) == 6:
-            tmp[music].append(style_file_name[1])
-        else:
-            assert False, "You should not ask for more than 10 pictures one time"
+# print("style_file_name:",style_file_name) # a dictionary
 
-tmp_input, tmp_style = [], []
+# tmp = {}
+# for music in name:
+#     tmp[music] = []
+#     for pic in input_file_name[x]:
+#         if len(pic) == 7:
+#             tmp[music].append(style_file_name[0])
+#         elif len(pic) == 9:
+#             tmp[music].append(style_file_name[1])
+#         else:
+#             assert False, "You should not ask for more than 10 pictures one time"
+
+# tmp_input, tmp_style = [], []
+# for music in name:
+#     for pic in input_file_name[music]:
+#         tmp_input.append(music+"/"+pic)
+#         tmp_style.append(style_file_name[music].pop(0))
+# input_file_name, style_file_name = tmp_input, tmp_style
+
+# write very good, not write next time.......
+
+map = {}
 for music in name:
+    map[music] = {}
     for pic in input_file_name[music]:
-        tmp_input.append(music+"/"+pic)
-        tmp_style.append(tmp[music].pop(0))
-input_file_name, style_file_name = tmp_input, tmp_style
+        if len(pic) == 7:
+            map[music][pic] = style_file_name[music][0]
+        elif len(pic) == 9:
+            map[music][pic] = style_file_name[music][1]
+        else :
+            print(pic)
+            assert False, "You should not ask for more than 10 pictures one time"
+    style_file_name[music].pop(0)
+    style_file_name[music].pop(0)
 
-for content, style in zip(input_file_name, style_file_name):
-    if args.style == 'see list':
-        style = STYLE_PATH + style
-    # Now style is the complete path to the style image
-    style_img = image_loader(style, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-    if args.content == 'see list':
-        content = CONTENT_PATH + content
-    ### image Loaded
-    print(f"Transferring from {content} to {style}")
-    if args.gray:
-        content_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
-        input_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
-    elif args.color_preserve:
-        content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-        input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-        style_img = color_matching(content_img, style_img).to(DEVICE)
-    elif args.luminance_only:
-        ori_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-        content_img, style_img = luminance_process(ori_img, style_img)
-        input_img = content_img.clone().detach().to(DEVICE)
+# print("map:", map)
 
-    else:
-        content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
-        input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
+# for content, style in zip(input_file_name, style_file_name):
+for music in name:
+    for key, value in map[music].items():
+        content = music + "/" + key
+        style = value
+        print("content:", content)
+        print("style:", style)
+        if args.style == 'see list':
+            style = STYLE_PATH + style
+        # Now style is the complete path to the style image
+        style_img = image_loader(style, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+        if args.content == 'see list':
+            content = CONTENT_PATH + content
+        ### image Loaded
+        print(f"Transferring from {content} to {style}")
+        if args.gray:
+            content_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
+            input_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
+        elif args.color_preserve:
+            content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+            input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+            style_img = color_matching(content_img, style_img).to(DEVICE)
+        elif args.luminance_only:
+            ori_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+            content_img, style_img = luminance_process(ori_img, style_img)
+            input_img = content_img.clone().detach().to(DEVICE)
 
-    input_size = Image.open(content).size
+        else:
+            content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
+            input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
 
-    assert style_img.size() == content_img.size(), \
-        "we need to import style and content images of the same size"
+        input_size = Image.open(content).size
 
-    output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
-    # a bad news is that if we concat them into a batch, cuda out of memory
-    # save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
-    if not args.gray and not args.color_preserve and args.luminance_only:
-        upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
-        lower_bound, _ = (-ori_img[0]).max(dim = 0)
-        # print(lower_bound.size(), upper_bound.size())
-        output = YIQ(output)
-        ori_img = YIQ(ori_img)
-        lumi_delta = output[0][0] - ori_img[0][0]
-        lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
-        ori_img[0][0] = ori_img[0][0] + lumi_delta
-        output = YIQ(ori_img, mode = "decode")
+        assert style_img.size() == content_img.size(), \
+            "we need to import style and content images of the same size"
 
-    name_content, ext = os.path.splitext(os.path.basename(content))
-    name_style, _ = os.path.splitext(os.path.basename(style))
-    fname = name_content+'-'+name_style+ext
+        output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
+        # a bad news is that if we concat them into a batch, cuda out of memory
+        # save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
+        if not args.gray and not args.color_preserve and args.luminance_only:
+            upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
+            lower_bound, _ = (-ori_img[0]).max(dim = 0)
+            # print(lower_bound.size(), upper_bound.size())
+            output = YIQ(output)
+            ori_img = YIQ(ori_img)
+            lumi_delta = output[0][0] - ori_img[0][0]
+            lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
+            ori_img[0][0] = ori_img[0][0] + lumi_delta
+            output = YIQ(ori_img, mode = "decode")
 
-    save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname=fname)
-    print(f"Transfer from {content} to {style} done")
+        name_content, ext = os.path.splitext(os.path.basename(content))
+        name_style, _ = os.path.splitext(os.path.basename(style))
+        fname = name_content+'-'+name_style+ext
+
+        save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH + music + "/", fname=fname)
+        print(f"Transfer from {content} to {style} done")
