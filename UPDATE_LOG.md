@@ -1,3 +1,12 @@
+## 24.06.01 21:16 SQA
+
+- Do some prompt engineering. Find two big problems:
+
+1. The style image is not good enough, two of them have low resolution. We need to change them. I collect some good images waiting for you to process.
+
+2. Qwen is very not stable, but is somehow "stable" by outputing the same non-sense lyrics... I think we must try to generate images without the lyrics.
+
+
 ## 24.05.31 9:30 LYY
 
 - Build new docker, really exhausted. Please read the `README.md` for new docker details. I strongly suggest that before building the docker, test the code locally with enough patience.

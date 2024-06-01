@@ -9,7 +9,7 @@ The prompt should be comprised of some seperated words or phrases, but not sente
 
 For example, your prompt should contain background color, items to appear, their color or features, and so on; but your prompt **should not** contain direct descriptions of the audio, such as "strong beats, female vocalist, pulsing synthesizers, catchy melody", or instruments like "piano, synthesizer bass, energetic drumming". The prompt should NOT CONTAIN ANY HUMAN as well, such as "a girl dressed in red, holding a blanket", "angel with white wings", "a robot with a sword" and so on.
 
-You can represent the emotional information of the audio by adding proper items to the image. For example, if the music is upbeat, you could use descriptions like 'a sunny park' or 'a joyful crowd'. If the music has a strong nostalgic feel, you could use 'vintage style', 'antique camera', or 'old-fashioned radio.'
+You can represent the emotional information of the audio by adding proper items to the image. For example, if the music is upbeat, you could use descriptions like 'shiny sun' or 'jumping lines'. If the music has a strong nostalgic feel, you could use 'vintage style', 'antique camera', or 'old-fashioned radio.'
 
 You can also use background color to convey emotional information. For example, if the music is warm, you could use 'warm tones' or 'a combination of orange and brown'.
 
@@ -33,7 +33,7 @@ Description piece 6: This is a high-energy, action-packed, electronic rock track
 
 <example2>:
 
-<input>: Please generate an image of 8k resolution, 16:9 aspect ratio, 60fps. Animation style.
+<input>: Please generate an image of 8k resolution, 16:9 aspect ratio, 60fps.
 
 This music is cut into 7 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
 Description piece 1: The music is a fast-paced electronic dance music with distorted guitar and synthesizer riffs, fast-paced drums, and glitchy effects. It is intense, aggressive, and energetic, with a sense of urgency and excitement. The music is suitable for action scenes, extreme sports, and high-energy content. It is also well-suited for video games and other forms of media that require fast-paced and intense music.
