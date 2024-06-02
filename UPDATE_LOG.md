@@ -1,3 +1,9 @@
+## 24.06.02 18:50 SQA
+
+- Test after restarting a pod, seems to be a success.
+
+- Add a line in `main.ipynb` to clear the directory `style_transfer/` before running the code.
+
 ## 24.06.02 17:00 SQA
 
 - Fix a bug from LYY. Modify a bit Qwen's prompt.
