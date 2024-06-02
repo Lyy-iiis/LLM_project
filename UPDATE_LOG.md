@@ -1,3 +1,7 @@
+## 24.06.02 13:45 XQC
+
+- Update style images and descriptions. Retribution -> Broken Sky, After Dawn -> Luminescence.
+
 ## 24.06.01 21:16 SQA
 
 - Do some prompt engineering. Find two big problems:
