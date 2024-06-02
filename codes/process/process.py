@@ -209,8 +209,7 @@ for t in range(args.num_char) :
 ##############################################################
 # prompt for generating image with no character
 
-system_prompt = ""
-with open(PROCESS_PATH+"prompt", "r") as f:
+with open(PROCESS_PATH+"prompt_nc", "r") as f:
   system_prompt = f.read()
 # The second example is DESTRUCTION 3,2,1
 

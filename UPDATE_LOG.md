@@ -1,3 +1,9 @@
+## 24.06.02 17:00 SQA
+
+- Fix a bug from LYY. Modify a bit Qwen's prompt.
+
+- To fix Qwen's lyrics, my only way is to add a parameter `--ignore_lyrics` (default False). In `main.ipynb` it is set to be True and you may change it.
+
 ## 24.06.02 13:45 XQC
 
 - Update style images and descriptions. Retribution -> Broken Sky, After Dawn -> Luminescence.
