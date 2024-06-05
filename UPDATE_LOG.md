@@ -1,3 +1,7 @@
+## 24.06.05 21:00 LYY
+
+- Add `main.py`, now can run batch of music
+
 ## 24.06.05 8:00 LYY
 
 - Put prompt into files in `code`
