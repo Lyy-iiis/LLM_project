@@ -87,6 +87,7 @@ if args.style == 'see list':
             with open(DATA_PATH + '.tmp/process/' + fname + '.style_nc' + str(t), "r") as f :
                 style_file_name_nc[fname].append(f.readline().rstrip())
         style_file_name[fname] = [x + '.png' for x in style_file_name[fname]]
+        style_file_name_nc[fname] = [x + '.png' for x in style_file_name_nc[fname]]
 else:
     style_file_name["specified"].append(args.style)
 
