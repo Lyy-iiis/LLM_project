@@ -1,3 +1,9 @@
+## 24.06.05 8:00 LYY
+
+- Put prompt into files in `code`
+
+- Try flashattention, install takes serveral hours but only 10 seconds speed up.
+
 ## 24.06.02 18:50 SQA
 
 - Test after restarting a pod, seems to be a success.
@@ -310,9 +316,9 @@ To run the code, first create a file `data/input_prompt.txt` and write your prom
 
 ## 24.05.02 14:30 LYY
 
-- Try Stable-Diffusion-xl-based-1.0
+- Try `Stable-Diffusion-xl-based-1.0`
 
-- Try Stable-Diffusion-xl-based-1.0 + stable-diffusion-xl-refiner-1.0. With the refiner model, the output is more realistic. However, the refiner model can't able to handle person's hands and other characteristics.
+- Try `Stable-Diffusion-xl-based-1.0 + stable-diffusion-xl-refiner-1.0`. With the refiner model, the output is more realistic. However, the refiner model can't able to handle person's hands and other characteristics.
 
 - Try playground-v2.5-1024px-aesthetic, the output is really fantastic. You need to download latest version of diffuser to run. Limits: only 77 tokens for input.
 

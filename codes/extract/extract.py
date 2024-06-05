@@ -32,6 +32,7 @@ args = parser.parse_args()
 
 MODEL_PATH = args.model_path
 PWD = os.getcwd()
+EXTRACT_PATH = os.path.dirname(os.path.abspath(__file__))+ "/"
 DATA_PATH = args.data_path
 if DATA_PATH[0] == '.' :
     DATA_PATH = PWD + "/" + DATA_PATH
@@ -95,7 +96,7 @@ def meaningful_lyrics(lyrics):
         return False
     return True
 
-with open(DATA_PATH + "qwen_prompt", "r") as f:
+with open(EXTRACT_PATH + "qwen_prompt", "r") as f:
     qwen_prompt = f.read()
 
 def extract(file_name, device = 0, path = MUSIC_PATH) :

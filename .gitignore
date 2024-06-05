@@ -8,6 +8,7 @@ codes/process/*.png
 codes/style_transfer/**/*.png
 *.jpg
 *.jpeg
+*.png
 **/__pycache__/
 **/=0.27.0
 **/.vscode/
