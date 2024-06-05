@@ -75,15 +75,17 @@ else:
 # print("name:",name) # contains the name of input music, without the suffix
 
 style_file_name = {}
+style_file_name_nc = {}
 if args.style == 'see list':
     for fname in name :
         style_file_name[fname] = []
+        style_file_name_nc[fname] = []
         for t in range(args.num_char) :
             with open(DATA_PATH + '.tmp/process/' + fname + '.style' + str(t), "r") as f :
                 style_file_name[fname].append(f.readline().rstrip())
         for t in range(args.num_non_char) :
             with open(DATA_PATH + '.tmp/process/' + fname + '.style_nc' + str(t), "r") as f :
-                style_file_name[fname].append(f.readline().rstrip())
+                style_file_name_nc[fname].append(f.readline().rstrip())
         style_file_name[fname] = [x + '.png' for x in style_file_name[fname]]
 else:
     style_file_name["specified"].append(args.style)
@@ -116,13 +118,13 @@ for music in name:
     for pic in input_file_name[music]:
         if len(pic) == 7:
             map[music][pic] = style_file_name[music][0]
+            style_file_name[music].pop(0)
         elif len(pic) == 9:
-            map[music][pic] = style_file_name[music][1]
+            map[music][pic] = style_file_name_nc[music][0]
+            style_file_name_nc[music].pop(0)
         else :
             print(pic)
             assert False, "You should not ask for more than 10 pictures one time"
-    style_file_name[music].pop(0)
-    style_file_name[music].pop(0)
 
 # print("map:", map)
 
