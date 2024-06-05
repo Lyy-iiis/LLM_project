@@ -20,3 +20,4 @@ zhipuai
 safetensors
 pillow
 safetensors
+ml_collections
