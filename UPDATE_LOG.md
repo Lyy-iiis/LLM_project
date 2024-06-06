@@ -1,3 +1,7 @@
+## 24.06.06 14:00 LYY
+
+- Modify `generateUI.py`, now more fancy. You can adjust theme.
+
 ## 24.06.06 12:00 XQC
 
 - Modify style transfer. Add `--attn` parameter. 
