@@ -72,9 +72,11 @@ if args.content == 'see list':
     tmp = [x[:-4] for x in input_file_name]
     suffix, input_file_name = [], {}
     for x in tmp:
-        print(os.listdir(CONTENT_PATH+"/"+x))
+        # if CONTENT_PATH[-1] == '/':
+        #     CONTENT_PATH = CONTENT_PATH[:-1]
+        print(os.listdir(CONTENT_PATH+x))
         input_file_name[x] = []
-        for pic in os.listdir(CONTENT_PATH+"/"+x):
+        for pic in os.listdir(CONTENT_PATH+x):
             if pic.endswith(".png"):
                 input_file_name[x].append(pic)
     name = tmp

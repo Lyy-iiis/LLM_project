@@ -1,3 +1,11 @@
+## 24.06.06 10:30 LYY
+
+- Modify `generateAPI.py` and `generateUI.py`. Now more user-friendly.
+
+- Fix serveral small bugs
+
+- Exists problem: Style Transfer seems like no use in the final result. 
+
 ## 24.06.06 3:00 XQC
 
 - Add attention to style transfer. Though weird composition, it reduces the negative effect of the style transfer.
