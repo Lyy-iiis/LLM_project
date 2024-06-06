@@ -49,8 +49,7 @@ def image_loader(image_name, imsize, gray = False):
     image = Variable(transforms.ToTensor()(image))
     # fake batch dimension required to fit network's input dimensions
     image = image.unsqueeze(0)
-    attn = attention.attn_map(original_image).squeeze(2)
-    return image, attn
+    return image
 
 def save_image(tensor, size, input_size, output_path, fname='transferred.png'):
     unloader = transforms.ToPILImage()  # reconvert into PIL image
@@ -63,7 +62,7 @@ def save_image(tensor, size, input_size, output_path, fname='transferred.png'):
     image.save(out_path)
 
 class ContentLoss(nn.Module):
-    def __init__(self, target, weight, attn):
+    def __init__(self, target, weight):
         super(ContentLoss, self).__init__()
         # we 'detach' the target content from the tree used
         self.target = target.detach() * weight
@@ -72,7 +71,6 @@ class ContentLoss(nn.Module):
         # will throw an error.
         self.weight = weight
         self.criterion = nn.MSELoss()
-        self.attn = attn
 
     def forward(self, input):
         self.loss = self.criterion(input * self.weight, self.target)
@@ -120,7 +118,7 @@ class StyleLoss(nn.Module):
 
 
 
-def get_style_model_and_losses(cnn, style_img, content_img, attn, style_weight=1000, content_weight=2, content_layers=content_layers_default, style_layers=style_layers_default):
+def get_style_model_and_losses(cnn, style_img, content_img, style_weight=1000, content_weight=2, content_layers=content_layers_default, style_layers=style_layers_default):
     cnn = copy.deepcopy(cnn)
 
     # just in order to have an iterable access to or list of content/syle
@@ -145,7 +143,7 @@ def get_style_model_and_losses(cnn, style_img, content_img, attn, style_weight=1
             if name in content_layers:
                 # add content loss:
                 target = model(content_img).clone()
-                content_loss = ContentLoss(target, content_weight, attn)
+                content_loss = ContentLoss(target, content_weight)
                 model.add_module("content_loss_" + str(i), content_loss)
                 content_losses.append(content_loss)
 
@@ -190,11 +188,11 @@ def get_input_param_optimizer(input_img, lr):
     optimizer = optim.LBFGS([input_param], lr = lr)
     return input_param, optimizer
 
-def run_style_transfer(cnn, content_img, style_img, input_img, attn, lr, num_steps=300, style_weight=1000, content_weight=1):
+def run_style_transfer(cnn, content_img, style_img, input_img, lr, num_steps=300, style_weight=1000, content_weight=1):
     """Run the style transfer."""
     print('Building the style transfer model..')
     content_img_copy = content_img.clone().detach()
-    model, style_losses, content_losses = get_style_model_and_losses(cnn, style_img, content_img, attn, style_weight, content_weight)
+    model, style_losses, content_losses = get_style_model_and_losses(cnn, style_img, content_img, style_weight, content_weight)
     input_param, optimizer = get_input_param_optimizer(input_img, lr)
     best_param, best_loss = None, float('inf')
     with tqdm.tqdm(total = num_steps) as pbar :
@@ -230,7 +228,6 @@ def run_style_transfer(cnn, content_img, style_img, input_img, attn, lr, num_ste
 
     # a last correction...
     best_param.data.clamp_(0, 1)
-    # best_param.data = attn * best_param.data + (1 - attn) * content_img_copy
 
     return best_param.data
 

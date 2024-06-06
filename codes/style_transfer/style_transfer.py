@@ -12,8 +12,6 @@ import torchvision.models as models
 
 import argparse
 
-import attention
-
 from utils import image_loader, save_image, run_style_transfer, color_matching, YIQ, luminance_process
 
 ############################################################################
@@ -36,6 +34,7 @@ parser.add_argument('--gray', '-g', action='store_true')
 parser.add_argument('--color_preserve', '-c_p', action='store_true', help = "doesn't work if gray is True")
 parser.add_argument('--luminance_only', '-l_o', action='store_true', help = "doesn't work if gray is True")
 parser.add_argument('--aams', action = 'store_true')
+parser.add_argument('--attn', action = 'store_true')
 parser.add_argument('--lr', '-lr', type=float, default=1)
 parser.add_argument('--num_non_char', '-nnc', type = int, default = 1)
 parser.add_argument('--num_char', '-nc', type = int, default = 1)
@@ -47,6 +46,8 @@ if args.luminance_only and args.aams :
     from modelscope.pipelines import pipeline
     from modelscope.utils.constant import Tasks
     from modelscope.outputs import OutputKeys
+if args.attn :
+    import attention
 
 assert torch.cuda.is_available(), "WHY DONT YOU HAVE CUDA??????"
 DEVICE = torch.device("cuda:0")
@@ -60,7 +61,8 @@ cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVIC
 
 
 ############################################################################
-attention.attn_init()
+if args.attn :
+    attention.attn_init()
 
 input_file_name = []
 name = []
@@ -154,33 +156,33 @@ for music in name:
         if args.style == 'see list':
             style = STYLE_PATH + style
         # Now style is the complete path to the style image
-        style_img, _ = image_loader(style, IMG_SIZE)
+        style_img = image_loader(style, IMG_SIZE)
         style_img = style_img.type(torch.cuda.FloatTensor).to(DEVICE)
         if args.content == 'see list':
             content = CONTENT_PATH + content
         ### image Loaded
         print(f"Transferring from {content} to {style}")
         if args.gray:
-            content_img, attn = image_loader(content, IMG_SIZE, gray=True)
+            content_img = image_loader(content, IMG_SIZE, gray=True)
             content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
-            input_img, _ = image_loader(content, IMG_SIZE, gray=True)
+            input_img = image_loader(content, IMG_SIZE, gray=True)
             input_img = input_img.type(torch.cuda.FloatTensor).to(DEVICE)
         elif args.color_preserve:
-            content_img, attn = image_loader(content, IMG_SIZE)
+            content_img = image_loader(content, IMG_SIZE)
             content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
-            input_img, _ = image_loader(content, IMG_SIZE)
+            input_img = image_loader(content, IMG_SIZE)
             input_img = input_img.type(torch.cuda.FloatTensor).to(DEVICE)
             style_img = color_matching(content_img, style_img).to(DEVICE)
         elif args.luminance_only:
-            ori_img, attn = image_loader(content, IMG_SIZE)
+            ori_img = image_loader(content, IMG_SIZE)
             ori_img = ori_img.type(torch.cuda.FloatTensor).to(DEVICE)
             content_img, style_img = luminance_process(ori_img, style_img)
             input_img = content_img.clone().detach().to(DEVICE)
 
         else:
-            content_img, attn = image_loader(content, IMG_SIZE)
+            content_img = image_loader(content, IMG_SIZE)
             content_img = content_img.type(torch.cuda.FloatTensor)
-            input_img, _ = image_loader(content, IMG_SIZE)
+            input_img = image_loader(content, IMG_SIZE)
             input_img = input_img.type(torch.cuda.FloatTensor)
         # print(attn, attn.max(), attn.min())
 
@@ -196,7 +198,7 @@ for music in name:
             output = output[OutputKeys.OUTPUT_IMG]
             output = torch.tensor(output).to(DEVICE).permute(2, 0, 1).type(torch.cuda.FloatTensor).unsqueeze(0) / 255
         else :
-            output = run_style_transfer(cnn, content_img, style_img, input_img, attn, args.lr, args.epoch, args.style_weight, args.content_weight)
+            output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
         if not args.gray and not args.color_preserve and args.luminance_only:
             upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
             lower_bound, _ = (-ori_img[0]).max(dim = 0)
@@ -213,9 +215,11 @@ for music in name:
         fname = name_content+'-'+name_style+ext
 
         # output = torch.stack([0.299 * output, 0.587 * output, 0.114 * output], dim=0)
-        # if not args.gray :
-        #     content_img, _ = image_loader(content, IMG_SIZE)
-        #     content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
-        #     output = attn * output + (1 - attn) * content_img
+        if args.attn :
+            content_img = image_loader(content, IMG_SIZE)
+            content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
+            # attn = attention.attn_map(Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))).squeeze(2).unsqueeze(0).to(DEVICE)
+            attn = attention.attn_map(Image.open(content)).squeeze(2).unsqueeze(0).to(DEVICE)
+            output = attn * output + (1 - attn) * content_img
         save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH + music + "/", fname=fname)
         print(f"Transfer from {content} to {style} done")
