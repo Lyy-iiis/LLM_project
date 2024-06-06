@@ -1,3 +1,7 @@
+## 24.06.06 3:00 XQC
+
+- Add attention to style transfer. Though weird composition, it reduces the negative effect of the style transfer.
+
 ## 24.06.05 21:00 LYY
 
 - Add `main.py`, now can run batch of music
