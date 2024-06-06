@@ -17,6 +17,7 @@ CODE_PATH = os.getcwd()
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MUSIC_PATH = CODE_PATH + "/codes/data/demo/music/"
 IMAGE_PATH = CODE_PATH + "/codes/data/demo/.tmp/style_transfer/"
+IMAGE_PATH_N = CODE_PATH + "/codes/data/demo/.tmp/generate/"
 
 app = FastAPI()
 
@@ -50,12 +51,15 @@ async def process_chat(prompt: ChatRequest):
     os.system(f'python {CODE_PATH}/demo/demo.py')
 
     image = []
+    for filename in os.listdir(IMAGE_PATH_N + "music/"):
+        if filename.endswith(".png"):
+            image.append(Image.open(IMAGE_PATH_N + "music/" + filename))
     for filename in os.listdir(IMAGE_PATH + "music/"):
         if filename.endswith(".png"):
             image.append(Image.open(IMAGE_PATH + "music/" + filename))
 
     encoded_image = {}
-    for i in range(4):
+    for i in range(len(image)):
         byte_arr = BytesIO()
         image[i].save(byte_arr, format='PNG')
         encoded_image[i] = base64.encodebytes(byte_arr.getvalue()).decode('ascii')

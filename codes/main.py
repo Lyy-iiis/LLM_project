@@ -15,10 +15,10 @@ STYLE_PATH = DATA_PATH + 'style/illustration_style/'
 def run(music_name):
     MUSIC_NAME = music_name
 
-    if os.path.exists(DATA_PATH + '.tmp/'):
-        os.system(f'rm -rf {DATA_PATH}.tmp/')
+    # if os.path.exists(DATA_PATH + '.tmp/'):
+    #     os.system(f'rm -rf {DATA_PATH}.tmp/')
 
-    os.makedirs(DATA_PATH + '.tmp/')
+    # os.makedirs(DATA_PATH + '.tmp/')
 
     list = ['extract/', 'generate/', 'process/', 'inprompt', 'style_transfer']
 
@@ -68,7 +68,7 @@ def run(music_name):
     # for file_name in input_list:
     #     [os.remove(f) for f in glob.glob(DATA_PATH + '.tmp/style_transfer/' + file_name + '/*')]
 
-    os.system(f'python style_transfer/style_transfer.py --data_path {DATA_PATH} --output_path {DATA_PATH}.tmp/style_transfer/ --style_path {STYLE_PATH} --content_path {CONTENT_PATH} -l_o --num_char {num_char} --num_non_char {num_non_char}')
+    os.system(f'python style_transfer/style_transfer.py --data_path {DATA_PATH} --output_path {DATA_PATH}.tmp/style_transfer/ --style_path {STYLE_PATH} --content_path {CONTENT_PATH} -c_p --num_char {num_char} --num_non_char {num_non_char}')
 
     if not os.path.exists(f'{DATA_PATH}output/'):
         os.mkdir(f'{DATA_PATH}output/')
@@ -94,3 +94,4 @@ if __name__ == '__main__':
         music = music[:-5]
         print(parse_name(music))
         run(music)
+        exit()

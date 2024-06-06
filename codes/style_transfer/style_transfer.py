@@ -23,7 +23,7 @@ parser.add_argument('--content_path', type=str, default = '../data/.tmp/generate
 parser.add_argument('--style_path', type=str, default = '../data/style/illustration_style/', help='The path to the style image')
 # parser.add_argument('--style', '-s', type=str, required=True, help='The path to the style image')
 parser.add_argument('--style', '-s', type=str, default = 'see list', help='The path to the style image')
-parser.add_argument('--epoch', '-e', type=int, default=50, help='The number of epoch')
+parser.add_argument('--epoch', '-e', type=int, default=200, help='The number of epoch')
 parser.add_argument('--content_weight', '-c_w', type=int, default=1, help='The weight of content loss')
 parser.add_argument('--style_weight', '-s_w', type=int, default=500, help='The weight of style loss')
 # parser.add_argument('--initialize_noise', '-i_n', action='store_true', help='Initialize with white noise? elif initialize with content image')
