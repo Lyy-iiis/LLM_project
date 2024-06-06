@@ -68,7 +68,7 @@ def run(music_name):
     # for file_name in input_list:
     #     [os.remove(f) for f in glob.glob(DATA_PATH + '.tmp/style_transfer/' + file_name + '/*')]
 
-    os.system(f'python style_transfer/style_transfer.py --data_path {DATA_PATH} --output_path {DATA_PATH}.tmp/style_transfer/ --style_path {STYLE_PATH} --content_path {CONTENT_PATH} -c_p --num_char {num_char} --num_non_char {num_non_char}')
+    os.system(f'python style_transfer/style_transfer.py --data_path {DATA_PATH} --output_path {DATA_PATH}.tmp/style_transfer/ --style_path {STYLE_PATH} --content_path {CONTENT_PATH} -l_o --attn --aams --num_char {num_char} --num_non_char {num_non_char}')
 
     if not os.path.exists(f'{DATA_PATH}output/'):
         os.mkdir(f'{DATA_PATH}output/')
