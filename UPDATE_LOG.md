@@ -1,3 +1,11 @@
+## 24.06.06 15:30 SQA
+
+- Add an example in prompt, decrease the possibility of generation building + road. Test results are in `/ssdshare/music/output/`.
+
+- Write a gpt4o API code, but our key is no longer valid.
+
+- An issue: OOM in style transfer when > 2 musics. 
+
 ## 24.06.06 14:00 LYY
 
 - Modify `generateUI.py`, now more fancy. You can adjust theme.
