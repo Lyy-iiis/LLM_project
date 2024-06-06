@@ -20,4 +20,8 @@ zhipuai
 safetensors
 pillow
 safetensors
+# If using attention
 ml_collections
+# If using aams
+tensorflow
+modelscope

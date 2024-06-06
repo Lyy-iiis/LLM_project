@@ -1,3 +1,9 @@
+## 24.06.06 11:30 XQC
+
+- Add a `--aams` parameter to style transfer. If setting `--aams -l_o`, an aams model will be used, which provides a  more artistic style transfer, since it has self-attention in it.
+
+- Using this model needs to install `modelscope` and `tensorflow`. 
+
 ## 24.06.06 10:30 LYY
 
 - Modify `generateAPI.py` and `generateUI.py`. Now more user-friendly.
