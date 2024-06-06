@@ -6,6 +6,7 @@ import torch
 
 import os
 from PIL import Image
+import numpy as np
 
 import torchvision.models as models
 
@@ -34,12 +35,18 @@ parser.add_argument('--output_path', '-o', type=str, default='transferred/')
 parser.add_argument('--gray', '-g', action='store_true')
 parser.add_argument('--color_preserve', '-c_p', action='store_true', help = "doesn't work if gray is True")
 parser.add_argument('--luminance_only', '-l_o', action='store_true', help = "doesn't work if gray is True")
+parser.add_argument('--aams', action = 'store_true')
 parser.add_argument('--lr', '-lr', type=float, default=1)
 parser.add_argument('--num_non_char', '-nnc', type = int, default = 1)
 parser.add_argument('--num_char', '-nc', type = int, default = 1)
 args = parser.parse_args()
 
 ############################################################################
+
+if args.luminance_only and args.aams :
+    from modelscope.pipelines import pipeline
+    from modelscope.utils.constant import Tasks
+    from modelscope.outputs import OutputKeys
 
 assert torch.cuda.is_available(), "WHY DONT YOU HAVE CUDA??????"
 DEVICE = torch.device("cuda:0")
@@ -133,7 +140,9 @@ for music in name:
 
 # print("map:", map)
 
-# for content, style in zip(input_file_name, style_file_name):
+if args.luminance_only and args.aams :
+    style_transfer = pipeline(Tasks.image_style_transfer, model_id='/ssdshare/LLMs/cv_aams_style-transfer_damo/')
+
 for music in name:
     for key, value in map[music].items():
         content = music + "/" + key
@@ -178,9 +187,14 @@ for music in name:
         assert style_img.size() == content_img.size(), \
             "we need to import style and content images of the same size"
 
-        output = run_style_transfer(cnn, content_img, style_img, input_img, attn, args.lr, args.epoch, args.style_weight, args.content_weight)
-        # a bad news is that if we concat them into a batch, cuda out of memory
-        # save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
+        if args.luminance_only and args.aams :
+            content_img = Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
+            style_img = Image.fromarray(np.uint8(style_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
+            output = style_transfer(dict(content = content_img, style = style_img))
+            output = output[OutputKeys.OUTPUT_IMG]
+            output = torch.tensor(output).to(DEVICE).permute(2, 0, 1).type(torch.cuda.FloatTensor).unsqueeze(0) / 255
+        else :
+            output = run_style_transfer(cnn, content_img, style_img, input_img, attn, args.lr, args.epoch, args.style_weight, args.content_weight)
         if not args.gray and not args.color_preserve and args.luminance_only:
             upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
             lower_bound, _ = (-ori_img[0]).max(dim = 0)
@@ -197,9 +211,9 @@ for music in name:
         fname = name_content+'-'+name_style+ext
 
         # output = torch.stack([0.299 * output, 0.587 * output, 0.114 * output], dim=0)
-        if not args.gray :
-            content_img, _ = image_loader(content, IMG_SIZE)
-            content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
-            output = attn * output + (1 - attn) * content_img
+        # if not args.gray :
+        #     content_img, _ = image_loader(content, IMG_SIZE)
+        #     content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
+        #     output = attn * output + (1 - attn) * content_img
         save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH + music + "/", fname=fname)
         print(f"Transfer from {content} to {style} done")

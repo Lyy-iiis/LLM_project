@@ -7,10 +7,12 @@ from torchvision import transforms
 
 from models.modeling import VisionTransformer, CONFIGS
 
+DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
 def attn_init() :
   global model, transform
   config = CONFIGS["ViT-B_16"]
-  model = VisionTransformer(config, num_classes=1000, zero_head=False, img_size=224, vis=True).cuda()
+  model = VisionTransformer(config, num_classes=1000, zero_head=False, img_size=224, vis=True).to(DEVICE)
   model.load_from(np.load("/ssdshare/LLMs/ViT-B_16-224.npz"))
   model.eval()
 
@@ -22,7 +24,7 @@ def attn_init() :
 
 def attn_map(im) :
 
-  x = transform(im).cuda()
+  x = transform(im).to(DEVICE)
   print(x.size())
   logits, att_mat = model(x.unsqueeze(0))
 

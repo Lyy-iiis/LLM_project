@@ -37,7 +37,14 @@ def image_loader(image_name, imsize, gray = False):
         image = np.asarray(image)
         image = np.asarray([image,image,image])
         image = Image.fromarray(np.uint8(image).transpose(1,2,0))
-    image = loader(image)
+    if image.size[0] == image.size[1]:
+        image = loader(image)
+    else:
+        if image.size[0] > image.size[1]:
+            image = image.crop((0, 0, image.size[1], image.size[1]))
+        else:
+            image = image.crop((0, 0, image.size[0], image.size[0]))
+        image = loader(image)
     original_image = image
     image = Variable(transforms.ToTensor()(image))
     # fake batch dimension required to fit network's input dimensions
