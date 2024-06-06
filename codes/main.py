@@ -26,9 +26,12 @@ def run(music_name):
         if not os.path.exists(DATA_PATH + '.tmp/' + folder):
             os.makedirs(DATA_PATH + '.tmp/' + folder)
 
-    input_list = [
-    MUSIC_NAME+'.mp3'
-    ]
+    if type(MUSIC_NAME) is not list :
+        input_list = [
+        MUSIC_NAME+'.mp3'
+        ]
+    else :
+        input_list = MUSIC_NAME
     prompts = [f''' ''',
     ]
     # Pick the style images in the style library
