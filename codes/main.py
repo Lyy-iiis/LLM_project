@@ -20,9 +20,9 @@ def run(music_name):
 
     # os.makedirs(DATA_PATH + '.tmp/')
 
-    list = ['extract/', 'generate/', 'process/', 'inprompt', 'style_transfer']
+    l = ['extract/', 'generate/', 'process/', 'inprompt', 'style_transfer']
 
-    for folder in list:
+    for folder in l:
         if not os.path.exists(DATA_PATH + '.tmp/' + folder):
             os.makedirs(DATA_PATH + '.tmp/' + folder)
 
@@ -32,8 +32,7 @@ def run(music_name):
         ]
     else :
         input_list = MUSIC_NAME
-    prompts = [f''' ''',
-    ]
+    prompts = [f"The name of the song is {i[:-4]}" for i in input_list]
     # Pick the style images in the style library
     style_list = [
     # 'opia.png'
@@ -61,7 +60,7 @@ def run(music_name):
         with open(DATA_PATH + '.tmp/inprompt/' + name + '.prompt', 'w') as f:
             f.write(prompt)
 
-    os.system(f'python extract/extract.py --model_path {MODEL_PATH} --data_path {DATA_PATH} --music_path {MUSIC_PATH} --output_path {DATA_PATH}.tmp/extract/ --device_num 2 --ignore_lyrics False')
+    os.system(f'python extract/extract.py --model_path {MODEL_PATH} --data_path {DATA_PATH} --music_path {MUSIC_PATH} --output_path {DATA_PATH}.tmp/extract/ --device_num 2 --ignore_lyrics')
 
     os.system(f'python process/process.py --model_path {MODEL_PATH} --data_path {DATA_PATH} --model {LLM_MODEL} --prompt_path {DATA_PATH}.tmp/extract/ --output_path {DATA_PATH}.tmp/process/ --num_char {num_char} --num_non_char {num_non_char}')
 
@@ -75,14 +74,17 @@ def run(music_name):
 
     if not os.path.exists(f'{DATA_PATH}output/'):
         os.mkdir(f'{DATA_PATH}output/')
+    
+    if type(MUSIC_NAME) is not list :
+        MUSIC_NAME = music_name.replace(" ", "")
+        if not os.path.exists(f'{DATA_PATH}output/{MUSIC_NAME}'):
+            os.mkdir(f'{DATA_PATH}output/{MUSIC_NAME}')
 
-    MUSIC_NAME = music_name.replace(" ", "")
-    if not os.path.exists(f'{DATA_PATH}output/{MUSIC_NAME}'):
-        os.mkdir(f'{DATA_PATH}output/{MUSIC_NAME}')
+        print(f'{DATA_PATH}output/{MUSIC_NAME}')
 
-    print(f'{DATA_PATH}output/{MUSIC_NAME}')
-
-    os.system(f'cp -r {DATA_PATH}.tmp/ {DATA_PATH}output/{MUSIC_NAME}')
+        os.system(f'cp -r {DATA_PATH}.tmp/ {DATA_PATH}output/{MUSIC_NAME}')
+    else :
+        os.system(f'cp -r {DATA_PATH}.tmp/ {DATA_PATH}output/')
 
 def parse_name(music_name):
     music = music_name

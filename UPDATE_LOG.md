@@ -1,3 +1,9 @@
+## 24.06.07 9:00 XQC
+
+- Fix `attention.py` out of memory problem. 
+
+- Modify `main.py`.
+
 ## 24.06.06 15:30 SQA
 
 - Add an example in prompt, decrease the possibility of generation building + road. Test results are in `/ssdshare/music/output/`.

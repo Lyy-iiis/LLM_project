@@ -21,3 +21,4 @@ demo/flagged
 codes/data/output
 **/nohup.out
 codes/music_list.txt
+*.log
