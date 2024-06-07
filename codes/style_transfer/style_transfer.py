@@ -197,6 +197,7 @@ for music in name:
             output = style_transfer(dict(content = content_img, style = style_img))
             output = output[OutputKeys.OUTPUT_IMG]
             output = torch.tensor(output).to(DEVICE).permute(2, 0, 1).type(torch.cuda.FloatTensor).unsqueeze(0) / 255
+            output = output.clamp(0, 1)
         else :
             output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
         if not args.gray and not args.color_preserve and args.luminance_only:
