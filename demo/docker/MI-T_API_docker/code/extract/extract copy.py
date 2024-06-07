@@ -24,8 +24,8 @@ parser.add_argument('--output_path', type = str, default = '../data/.tmp/extract
 parser.add_argument('--window_size', type = int, default = 30_000)
 parser.add_argument('--overlap_size', type = int, default = 5_000)
 parser.add_argument('--device_num', type = int, default = 4)
+# parser.add_argument('--ignore_lyrics', type = bool, default = False)
 parser.add_argument('--ignore_lyrics', action='store_true')
-
 
 args = parser.parse_args()
 
@@ -33,6 +33,7 @@ args = parser.parse_args()
 
 MODEL_PATH = args.model_path
 PWD = os.getcwd()
+EXTRACT_PATH = os.path.dirname(os.path.abspath(__file__))+ "/"
 DATA_PATH = args.data_path
 if DATA_PATH[0] == '.' :
     DATA_PATH = PWD + "/" + DATA_PATH
@@ -96,7 +97,7 @@ def meaningful_lyrics(lyrics):
         return False
     return True
 
-with open(DATA_PATH + "../../extract/qwen_prompt", "r") as f:
+with open(EXTRACT_PATH + "qwen_prompt", "r") as f:
     qwen_prompt = f.read()
 
 def extract(file_name, device = 0, path = MUSIC_PATH) :

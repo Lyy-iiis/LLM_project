@@ -1,3 +1,7 @@
+## 24.06.07 18:00 SQA
+
+- Move the code into `/ssdshare/MI-T/code`. Modify the helm template so that you directly run the code in ssdshare.
+
 ## 24.06.07 9:00 XQC
 
 - Fix `attention.py` out of memory problem. 

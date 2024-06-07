@@ -17,9 +17,9 @@ if os.path.exists(DATA_PATH + '.tmp/'):
 # if not os.path.exists(DATA_PATH + '.tmp/'):
 os.makedirs(DATA_PATH + '.tmp/')
 
-list = ['extract/', 'generate/', 'process/', 'inprompt', 'style_transfer']
+file_list = ['extract/', 'generate/', 'process/', 'inprompt', 'style_transfer']
 
-for folder in list:
+for folder in file_list:
   if not os.path.exists(DATA_PATH + '.tmp/' + folder):
     os.makedirs(DATA_PATH + '.tmp/' + folder)
 
@@ -45,6 +45,8 @@ for (prompt, name) in zip(prompts, input_list):
   with open(DATA_PATH + '.tmp/inprompt/' + name + '.prompt', 'w') as f:
     f.write(prompt)
 
+# Here we may change the device number (optional)
+
 os.system(f'python extract/extract.py --model_path {MODEL_PATH} --data_path {DATA_PATH} --music_path {MUSIC_PATH} --output_path {DATA_PATH}.tmp/extract/ --device_num {DEVICE_NUM}')
 
 if not os.path.exists(DATA_PATH + 'style/'):
@@ -66,4 +68,4 @@ os.system(f'python process/process.py --model_path {MODEL_PATH} --data_path {DAT
 
 os.system(f'python generate/generate.py --model_path {MODEL_PATH} --data_path {DATA_PATH} --model {GENRATE_MODEL} --output_path {DATA_PATH}.tmp/generate/ --prompt_path {DATA_PATH}.tmp/process/ --image_num {IMAGE_NUM} --num_char {num_char} --num_non_char {num_non_char}')
 
-os.system(f'python style_transfer/style_transfer.py --data_path {DATA_PATH} --output_path {DATA_PATH}.tmp/style_transfer/ --style_path {STYLE_PATH} --content_path {CONTENT_PATH} -c_p --num_char {num_char} --num_non_char {num_non_char}')
+os.system(f'python style_transfer/style_transfer.py --data_path {DATA_PATH} --output_path {DATA_PATH}.tmp/style_transfer/ --style_path {STYLE_PATH} --content_path {CONTENT_PATH} -l_o --num_char {num_char} --num_non_char {num_non_char} --attn --aams')
