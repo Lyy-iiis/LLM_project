@@ -21,6 +21,7 @@ safetensors
 pillow
 safetensors
 # If using attention
+opencv-python
 ml_collections
 # If using aams
 tensorflow

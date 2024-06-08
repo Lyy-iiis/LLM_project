@@ -7,6 +7,7 @@ import os
 from PIL import Image
 
 API_SERVER_URL = "http://localhost:54224/generate"
+# API_SERVER_URL = os.environ["API_URL"]
 THEME = "NoCrypt/miku"
 # Don't forget to start your local API server
 
@@ -14,27 +15,28 @@ def generate(Music, Name, Prompt):
     # music type: Tuple[int, np.ndarray]
     
     # encode music into json
-    encode_music = Music[1].tolist()
+    encode_music = base64.b64encode(Music[1].tobytes()).decode("utf-8")
     data = {"sample_rate": Music[0], "music": encode_music, "music_name": Name, "prompt": Prompt}
     encoded = json.dumps(data).encode("utf-8")
 
     response = requests.post(API_SERVER_URL, data=encoded).json()
 
     # load response from model
-    encoded_image = {}
+    encoded_image = json.loads(response)
     byte_arr = {}
     png = {}
-
-    for i in range(8):
-        encoded_image[i] = json.loads(response)[f'{i}']
-        byte_arr[i] = base64.decodebytes(encoded_image[i].encode('ascii'))
+    
+    for i in range(4):
+        # print(type(response))
+        # encoded_image[i] = json.loads(response)[f'{i}']
+        byte_arr[i] = base64.decodebytes(encoded_image[i.__str__()].encode('ascii'))
         png[i] = Image.open(BytesIO(byte_arr[i]))
 
-    combined_image = Image.new('RGB', (png[0].width * 2, png[0].height * 4))
+    combined_image = Image.new('RGB', (png[0].width * 2, png[0].height * 2))
 
-    for i in range(4):
+    for i in range(2):
         combined_image.paste(png[i], (0, i * png[0].height))
-        combined_image.paste(png[i + 4], (png[0].width, i * png[0].height))
+        combined_image.paste(png[i + 2], (png[0].width, i * png[0].height))
     
     # return png[0], png[1], png[2], png[3], png[4], png[5], png[6], png[7]
     return combined_image

@@ -222,7 +222,7 @@ for music in name:
         fname = name_content+'-'+name_style+ext
 
         # output = torch.stack([0.299 * output, 0.587 * output, 0.114 * output], dim=0)
-        if args.attn :
+        if args.attn and style_img is not None:
             content_img = image_loader(content, IMG_SIZE)
             content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
             # attn = attention.attn_map(Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))).squeeze(2).unsqueeze(0).to(DEVICE)

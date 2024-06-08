@@ -23,7 +23,8 @@ app = FastAPI()
 
 class ChatRequest(BaseModel):
     sample_rate: int
-    music: list
+    # music: list
+    music: str
     music_name: str
     prompt: str
 
@@ -39,7 +40,9 @@ cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVIC
 
 @app.post("/generate")
 async def process_chat(prompt: ChatRequest):
-    music = (prompt.sample_rate, np.array(prompt.music))
+    print("Received request")
+    music = base64.b64decode(prompt.music.encode("utf-8"))
+    music = (prompt.sample_rate, np.frombuffer(music, dtype=np.int32))
     music_name = prompt.music_name
     user_prompt = prompt.prompt
     # Convert the music to WAV format
@@ -58,9 +61,9 @@ async def process_chat(prompt: ChatRequest):
     os.system(f'python {CODE_PATH}/demo/demo.py')
 
     image = []
-    for filename in os.listdir(IMAGE_PATH_N + "music/"):
-        if filename.endswith(".png"):
-            image.append(Image.open(IMAGE_PATH_N + "music/" + filename))
+    # for filename in os.listdir(IMAGE_PATH_N + "music/"):
+    #     if filename.endswith(".png"):
+    #         image.append(Image.open(IMAGE_PATH_N + "music/" + filename))
     for filename in os.listdir(IMAGE_PATH + "music/"):
         if filename.endswith(".png"):
             image.append(Image.open(IMAGE_PATH + "music/" + filename))

@@ -1,3 +1,9 @@
+## 24.06.08 18:00 LYY
+
+- Modify `generateAPI.py` and `generateUI.py`, speed up IO process. Now the time of generating image is almost the same as the time of the music.
+
+- Add a little prompt.
+
 ## 24.06.07 18:00 SQA
 
 - Move the code into `/ssdshare/MI-T/code`. Modify the helm template so that you directly run the code in ssdshare.
