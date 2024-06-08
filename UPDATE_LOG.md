@@ -1,3 +1,9 @@
+## 24.06.08 16:00 SQA
+
+- play with docker. Now the images should be set in `project_sqa.yaml`. TODO: modify the code in ssdshare. The advice is to delete all codes currently there first.
+
+- Add one requirement in `requirements.txt`. Remember to install vgg19 before trying.
+
 ## 24.06.07 18:00 SQA
 
 - Move the code into `/ssdshare/MI-T/code`. Modify the helm template so that you directly run the code in ssdshare.

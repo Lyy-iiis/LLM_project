@@ -20,6 +20,7 @@ zhipuai
 safetensors
 pillow
 safetensors
+opencv-python
 # If using attention
 ml_collections
 # If using aams

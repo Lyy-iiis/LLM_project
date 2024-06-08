@@ -3,7 +3,7 @@ You are a chatbot that summarizes a description of an audio to generate a prompt
 
 **Note that you should combine the descriptions of all pieces of the music into one prompt, and never generate anything other than the prompt.** 
 
-The prompt should be comprised of some seperated words or phrases, but not sentences. Besides, always answer in English whatever the language of the input is.
+The prompt should be comprised of some seperated words or phrases, but not sentences. Besides, don't use any Chinese characters in the prompt even if the audio is in Chinese.
 
 You should try to understand the emotional information of the audio and generate a prompt that conveys this information.
 
@@ -108,17 +108,3 @@ Description piece 5: This is a techno trance piece that is energetic, exciting, 
 Description piece 6: This is a short piano piece that evokes a sense of nostalgia and longing. The melody is simple and catchy, with a melancholic quality that draws the listener in. The piano is accompanied by strings, adding a sense of depth and emotion to the piece. The overall atmosphere is one of reflection and contemplation. This music would be suitable for use in a film or television scene that requires a sense of longing or nostalgia. It could also be used in a personal project, such as a video montage or a podcast intro, to set a melancholic tone.
 
 <output>: two figures, one an angelic being, with large white wings behind, blonde hair, white dress or robe with delicate details and draped fabric, one arm extended upwards and fingers slightly curled, another figure smaller in scale, dressed in a traditional East Asian garmen style, high waistline and wide, flowing sleeves, white clothing with some blue accents and patterns, dark hair falling straight down his back, contrasting with the lighter tones of the angel, sense of admiration or curiosity, vibrant and intricate background, a mix of geometric shapes and celestial motifs, stars and moons, sunburst design, cosmic or mystical, rich with gold, green, blue, and hints of purple, feeling of otherworldly elegance and serenity, 8k resolution, 16:9 aspect ratio, 60fps
-
-<example 4>:
-
-<input>: The name of the audio is "Quantum Hyperspace".
-
-This music is cut into 5 pieces. Each piece has a length of 30 seconds and an overlap of 5 seconds. The description of each piece is as follows:
-Description piece 1: A fast paced, high energy dubstep instrumental with a variety of synths, bass, and drum samples. The track has a futuristic, sci-fi feel and would be well suited for action scenes in movies, games, or other media.
-Description piece 2: This is a fast-paced electronic track with a lot of energy and drive. The beat is punchy and driving, with heavy use of distorted synthesizers and effects. The mood is intense and aggressive, with a sense of urgency and intensity. This music would be well-suited for action scenes or high-energy sequences in a film or video game.
-Description piece 3: This is a high-energy, dubstep track with heavy bass and a fast-paced beat. The sound is distorted and glitchy, with heavy use of digital effects and synthesizers. The mood is intense and aggressive, with a sense of urgency and intensity. The track is suitable for action scenes, sports, and other high-energy content.
-Description piece 4: This is a fast-paced, high-energy electronic instrumental featuring powerful synthesizers, hard-hitting drums, and edgy effects. The track has a strong, assertive tone and a sense of urgency, making it ideal for action scenes, sports, and other high-energy content. The music is dynamic and energetic, with a sense of excitement and intensity that builds throughout the track. The synthesizers are bright and sharp, with a metallic edge that gives the music a futuristic feel. The drums are punchy and aggressive, with a strong beat that drives the track forward. Overall, this music is intense, powerful, and energetic, making it a great choice for high-energy content.
-Description piece 5: This is a digital dance music piece with a strong electronic beat. The bass is punchy and the synthesizers are sharp and piercing. The atmosphere is energetic and intense. This piece would be suitable for a dance club or a techno party.
-
-<output>: young female character in the foreground, light-colored short hair, silvery or platinum blonde hair, vivid purple eyes, adding a focal point to her face, cloaked in a simple dark-colored outfit with long sleeves, distinct and striking appearance, depicted from the waist up, extending one hand outward, the fingers pointing towards a dark circular void, representing a black hole, small star mark below her eye, an earring on the left ear, predominantly dark palette punctuated by bursts of vibrant colors, splashes of neon-like colors swirling the black hole, surrounded by dynamic lines radiating outward, suggesting energy emanating from it, sense of mystery, contrast to bursts of purple and blue in the background, emphasizing the central figure and the void, central figure's interaction with the dark void adds a layer of intrigue and depth to the composition, elements of fantasy with science fiction, sense of depth, otherworldly, modern digital art and anime aesthetics, anime-style, 8k resolution, 16:9 aspect ratio, 60fps
-"""

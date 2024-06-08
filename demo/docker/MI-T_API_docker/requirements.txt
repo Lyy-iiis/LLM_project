@@ -1,7 +1,7 @@
 gradio
 diffusers>=0.27.0
 diffuser
-torch
+# torch>=2.1.1
 numpy
 fastapi
 uvicorn
@@ -19,3 +19,10 @@ pydub
 zhipuai
 safetensors
 ffmpeg-python
+pillow
+safetensors
+# If using attention
+ml_collections
+# If using aams
+tensorflow
+modelscope
