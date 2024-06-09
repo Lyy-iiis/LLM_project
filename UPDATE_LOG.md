@@ -1,3 +1,7 @@
+## 24.06.09 18:00 LYY
+
+- Fix a small bug
+
 ## 24.06.09 16:00 LYY
 
 - Finish docker, please visit `https://llmlab.ddns.net:9443/` for our service 🥰

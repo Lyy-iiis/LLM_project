@@ -146,7 +146,13 @@ def binary_ask(i,j,inprompt, prompt):
     response, tokens = f_response(messages)
     number = re.findall(r'\d+', response)[0]
     if number != '1' and number != '2':
+<<<<<<< HEAD
+        number = '1'
+    if shuffle:
+        number = '1' if number == '2' else '2'
+=======
         binary_ask(i,j,inprompt, prompt)
+>>>>>>> a3950798a51e185cdc58902125e62553dfdd1a33
     return int(number), tokens
 
 def get_style(prompt, inprompt):
