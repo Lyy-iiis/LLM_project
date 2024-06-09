@@ -19,7 +19,6 @@ pydub
 zhipuai
 safetensors
 pillow
-safetensors
 # If using attention
 opencv-python
 ml_collections

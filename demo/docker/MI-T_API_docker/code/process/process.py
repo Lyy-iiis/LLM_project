@@ -131,12 +131,7 @@ with open(DATA_PATH + "style/style_description.txt", "r") as f:
 with open(PROCESS_PATH+"style_prompt", "r") as f:
   style_prompt = f.read()
 
-def binary_ask(i, j, inprompt, prompt):
-    # random shuffle i, j
-    shuffle = 0
-    if torch.rand(1) > 0.5:
-      shuffle = 1
-      i, j = j, i
+def binary_ask(i,j,inprompt, prompt):
     prompt_ij = style_prompt
     prompt_ij += "1. " + style_dicription[i] + "\n"
     prompt_ij += "2. " + style_dicription[j] + "\n"
@@ -151,9 +146,13 @@ def binary_ask(i, j, inprompt, prompt):
     response, tokens = f_response(messages)
     number = re.findall(r'\d+', response)[0]
     if number != '1' and number != '2':
+<<<<<<< HEAD
         number = '1'
     if shuffle:
         number = '1' if number == '2' else '2'
+=======
+        binary_ask(i,j,inprompt, prompt)
+>>>>>>> a3950798a51e185cdc58902125e62553dfdd1a33
     return int(number), tokens
 
 def get_style(prompt, inprompt):
@@ -197,7 +196,8 @@ for t in range(args.num_char) :
 ##############################################################
 # prompt for generating image with no character
 
-with open(PROCESS_PATH+"prompt_nc", "r") as f:
+system_prompt = ""
+with open(PROCESS_PATH+"prompt", "r") as f:
   system_prompt = f.read()
 # The second example is DESTRUCTION 3,2,1
 

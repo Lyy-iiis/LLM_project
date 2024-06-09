@@ -199,9 +199,8 @@ for t in range(args.num_char) :
     with open(OUTPUT_PATH + file_name + ".prompt" + str(t), "w") as f :
       f.write(response)
     token_spent += tokens
-    # num, tokens = get_style(response,inprompt)
-    # token_spent += tokens
-    num = 99
+    num, tokens = get_style(response,inprompt)
+    token_spent += tokens
     with open(OUTPUT_PATH + file_name + ".style" + str(t), "w") as f :
       f.write(num.__str__())
 

@@ -156,11 +156,8 @@ for music in name:
         if args.style == 'see list':
             style = STYLE_PATH + style
         # Now style is the complete path to the style image
-        if style[-6:] != "99.png" :
-            style_img = image_loader(style, IMG_SIZE)
-            style_img = style_img.type(torch.cuda.FloatTensor).to(DEVICE)
-        else :
-            style_img = None
+        style_img = image_loader(style, IMG_SIZE)
+        style_img = style_img.type(torch.cuda.FloatTensor).to(DEVICE)
         if args.content == 'see list':
             content = CONTENT_PATH + content
         ### image Loaded
@@ -175,14 +172,11 @@ for music in name:
             content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
             input_img = image_loader(content, IMG_SIZE)
             input_img = input_img.type(torch.cuda.FloatTensor).to(DEVICE)
-            if style_img is not None :
-                style_img = color_matching(content_img, style_img).to(DEVICE)
+            style_img = color_matching(content_img, style_img).to(DEVICE)
         elif args.luminance_only:
             ori_img = image_loader(content, IMG_SIZE)
             ori_img = ori_img.type(torch.cuda.FloatTensor).to(DEVICE)
-            content_img = ori_img
-            if style_img is not None :
-                content_img, style_img = luminance_process(ori_img, style_img)
+            content_img, style_img = luminance_process(ori_img, style_img)
             input_img = content_img.clone().detach().to(DEVICE)
 
         else:
@@ -194,28 +188,28 @@ for music in name:
 
         input_size = Image.open(content).size
 
-        if style_img is not None:
-            if args.luminance_only and args.aams :
-                content_img = Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
-                style_img = Image.fromarray(np.uint8(style_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
-                output = style_transfer(dict(content = content_img, style = style_img))
-                output = output[OutputKeys.OUTPUT_IMG]
-                output = torch.tensor(output).to(DEVICE).permute(2, 0, 1).type(torch.cuda.FloatTensor).unsqueeze(0) / 255
-                output = output.clamp(0, 1)
-            else :
-                output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
-            if not args.gray and not args.color_preserve and args.luminance_only:
-                upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
-                lower_bound, _ = (-ori_img[0]).max(dim = 0)
-                # print(lower_bound.size(), upper_bound.size())
-                output = YIQ(output)
-                ori_img = YIQ(ori_img)
-                lumi_delta = output[0][0] - ori_img[0][0]
-                lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
-                ori_img[0][0] = ori_img[0][0] + lumi_delta
-                output = YIQ(ori_img, mode = "decode")
+        assert style_img.size() == content_img.size(), \
+            "we need to import style and content images of the same size"
+
+        if args.luminance_only and args.aams :
+            content_img = Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
+            style_img = Image.fromarray(np.uint8(style_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
+            output = style_transfer(dict(content = content_img, style = style_img))
+            output = output[OutputKeys.OUTPUT_IMG]
+            output = torch.tensor(output).to(DEVICE).permute(2, 0, 1).type(torch.cuda.FloatTensor).unsqueeze(0) / 255
+            output = output.clamp(0, 1)
         else :
-            output = content_img
+            output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
+        if not args.gray and not args.color_preserve and args.luminance_only:
+            upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
+            lower_bound, _ = (-ori_img[0]).max(dim = 0)
+            # print(lower_bound.size(), upper_bound.size())
+            output = YIQ(output)
+            ori_img = YIQ(ori_img)
+            lumi_delta = output[0][0] - ori_img[0][0]
+            lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
+            ori_img[0][0] = ori_img[0][0] + lumi_delta
+            output = YIQ(ori_img, mode = "decode")
 
         name_content, ext = os.path.splitext(os.path.basename(content))
         name_style, _ = os.path.splitext(os.path.basename(style))

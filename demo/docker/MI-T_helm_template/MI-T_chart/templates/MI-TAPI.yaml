@@ -57,6 +57,7 @@ spec:
 {{- else }}
         command: ["python3", "demo/generateAPI.py"]
         # command: ["python3", "/ssdshare/MI-T/code/demo/generateAPI.py"]
+
         # command: ["ls", "-l"]
         # args: ["-m", {{ $mp3path }}, 
         #        {{ $additionalargs }}
