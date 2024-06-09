@@ -97,7 +97,7 @@ print("Model loaded")
 num_inference_steps = 50
 guidance_scale = 7.5
 image_num = args.image_num
-negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry, black man, black woman, piano, crowd, word, title"
+negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry"
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")
@@ -150,7 +150,9 @@ if args.num_non_char > 0 :
 # num_inference_steps = 50
 # guidance_scale = 7.5
 # image_num = args.image_num
+
 negative_prompt = "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry, character, people, robot, human, couple, woman, man, child, baby, boy, girl, kid, adult, old, young, piano, road, word, title, black woman, black man, black child, black skin"
+
 
 for audio in audio_file_name :
     print(f"Generating for {audio}")

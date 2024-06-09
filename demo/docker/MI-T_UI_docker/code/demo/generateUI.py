@@ -14,6 +14,7 @@ def generate(Music, Name, Prompt):
     # music type: Tuple[int, np.ndarray]
     
     # encode music into json
+
     encode_music = base64.b64encode(Music[1].tobytes()).decode("utf-8")
     data = {"sample_rate": Music[0], "music": encode_music, "music_name": Name, "prompt": Prompt}
     encoded = json.dumps(data).encode("utf-8")
@@ -24,6 +25,7 @@ def generate(Music, Name, Prompt):
     encoded_image = json.loads(response)
     byte_arr = {}
     png = {}
+
     
     for i in range(4):
         byte_arr[i] = base64.decodebytes(encoded_image[i.__str__()].encode('ascii'))
