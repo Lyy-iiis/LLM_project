@@ -22,14 +22,18 @@ app = FastAPI()
 
 class ChatRequest(BaseModel):
     sample_rate: int
-    music: list
+    music: str
+    music_name: str
     prompt: str
 
 # cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVICE).eval()
 
 @app.post("/generate")
 async def process_chat(prompt: ChatRequest):
-    music = (prompt.sample_rate, np.array(prompt.music))
+    print("Received request")
+    music = base64.b64decode(prompt.music.encode("utf-8"))
+    music = (prompt.sample_rate, np.frombuffer(music, dtype=np.int32))
+    music_name = prompt.music_name
     user_prompt = prompt.prompt
     # Convert the music to WAV format
     if not os.path.exists(MUSIC_PATH):
@@ -37,6 +41,11 @@ async def process_chat(prompt: ChatRequest):
         
     write(MUSIC_PATH + "music.wav", music[0], music[1].astype(np.int16))
     with open(MUSIC_PATH + "prompt.txt", "w") as f:
+        if music_name == "":
+            f.write("")
+        else:
+            f.write("The name of the music is " + music_name + "\n")
+    with open(MUSIC_PATH + "prompt.txt", "a") as f:
         f.write(user_prompt)
         
     os.system(f'python {CODE_PATH}/demo.py')
@@ -47,7 +56,7 @@ async def process_chat(prompt: ChatRequest):
             image.append(Image.open(IMAGE_PATH + "music/" + filename))
 
     encoded_image = {}
-    for i in range(4):
+    for i in range(len(image)):
         byte_arr = BytesIO()
         image[i].save(byte_arr, format='PNG')
         encoded_image[i] = base64.encodebytes(byte_arr.getvalue()).decode('ascii')

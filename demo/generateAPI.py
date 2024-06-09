@@ -23,20 +23,11 @@ app = FastAPI()
 
 class ChatRequest(BaseModel):
     sample_rate: int
-    # music: list
     music: str
     music_name: str
     prompt: str
 
 cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVICE).eval()
-
-# pipe = DiffusionPipeline.from_pretrained(
-#     "/ssdshare/LLMs/playground-v2.5-1024px-aesthetic/",
-#     # custom_pipeline = "/root/LLM_project/codes/generate/lpw_stable_diffusion_xl.py",
-#     custom_pipeline = "/ssdshare/MI-T/lpw_stable_diffusion_xl.py",
-#     torch_dtype=torch.float16,
-#     variant="fp16",
-# ).to("cuda")
 
 @app.post("/generate")
 async def process_chat(prompt: ChatRequest):
@@ -61,9 +52,6 @@ async def process_chat(prompt: ChatRequest):
     os.system(f'python {CODE_PATH}/demo/demo.py')
 
     image = []
-    # for filename in os.listdir(IMAGE_PATH_N + "music/"):
-    #     if filename.endswith(".png"):
-    #         image.append(Image.open(IMAGE_PATH_N + "music/" + filename))
     for filename in os.listdir(IMAGE_PATH + "music/"):
         if filename.endswith(".png"):
             image.append(Image.open(IMAGE_PATH + "music/" + filename))

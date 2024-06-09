@@ -1,3 +1,9 @@
+## 24.06.09 16:00 LYY
+
+- Finish docker, please visit `https://llmlab.ddns.net:9443/` for our service 🥰
+
+- Sincerely thanks ZhaoHanHong's computer for building the docker. Without his help, we can't finish the docker in time. 
+
 ## 24.06.08 18:00 LYY
 
 - Modify `generateAPI.py` and `generateUI.py`, speed up IO process. Now the time of generating image is almost the same as the time of the music.
