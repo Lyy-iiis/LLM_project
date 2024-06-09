@@ -103,19 +103,6 @@ def f_response(messages) :
     response = outputs[0][input_ids.shape[-1]:]
     return TOKENIZER.decode(response, skip_special_tokens=True), 0
 
-# def run_llama3_70b(input_file_name, output_file_name):
-#   server = "/share/ollama/ollama serve"
-#   user = f"/share/ollama/ollama run llama3:70b < \"{input_file_name}\" > \"{output_file_name}\""
-#   print("Loading model")
-#   process_server = subprocess.Popen(server, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#   process_user = subprocess.Popen(user, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#   stdout, stderr = process_user.communicate()
-#   # return_code_1 = process_server.returncode
-#   return_code_2 = process_user.returncode
-#   print(f"User return code: {return_code_2}")
-#   print(f"User output: {stdout.decode()}")
-#   print(f"User error: {stderr.decode()}")
-
 audio_file_name = []
 with open(DATA_PATH + input_file_name, "r") as f :
   for line in f :
@@ -192,8 +179,9 @@ for t in range(args.num_char) :
     with open(OUTPUT_PATH + file_name + ".prompt" + str(t), "w") as f :
       f.write(response)
     token_spent += tokens
-    num, tokens = get_style(response,inprompt)
-    token_spent += tokens
+    # num, tokens = get_style(response,inprompt)
+    # token_spent += tokens
+    num = 99
     with open(OUTPUT_PATH + file_name + ".style" + str(t), "w") as f :
       f.write(num.__str__())
 
@@ -206,30 +194,6 @@ system_prompt = ""
 with open(PROCESS_PATH+"prompt", "r") as f:
   system_prompt = f.read()
 # The second example is DESTRUCTION 3,2,1
-
-# load()
-# for t in range(args.num_non_char) :
-#   for (prompt, file_name) in zip(prompts, audio_file_name) :
-#     with open(DATA_PATH + INPROMPT_PATH + file_name + ".prompt", "r") as f :
-#       inprompt = f.read()
-#     messages = [
-#         {"role": "system", "content": system_prompt},
-#         {"role": "user", "content": inprompt+'\n'+prompt},
-#     ]
-#     response, tokens = f_response(messages)
-#     with open(OUTPUT_PATH + file_name + ".prompt_nc" + str(t), "w") as f :
-#       f.write(response)
-#     token_spent += tokens
-#     messages = [
-#         {"role": "system", "content": style_prompt},
-#         {"role": "user", "content": response},
-#     ]
-#     response, tokens = f_response(messages)
-#     token_spent += tokens
-#     num = re.findall(r'\b\d+\b', response)[0]
-#     with open(OUTPUT_PATH + file_name + ".style_nc" + str(t), "w") as f :
-#       f.write(num)
-# print("Token spent:", token_spent)
 
 for t in range(args.num_non_char) :
   for (prompt, file_name) in zip(prompts, audio_file_name) :

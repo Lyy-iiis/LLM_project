@@ -1,8 +1,14 @@
-## 24.06.08 16:00 SQA
+## 24.06.09 16:00 LYY
 
-- play with docker. Now the images should be set in `project_sqa.yaml`. TODO: modify the code in ssdshare. The advice is to delete all codes currently there first.
+- Finish docker, please visit `https://llmlab.ddns.net:9443/` for our service 🥰
 
-- Add one requirement in `requirements.txt`. Remember to install vgg19 before trying.
+- Sincerely thanks ZhaoHanHong's computer for building the docker. Without his help, we can't finish the docker in time. 
+
+## 24.06.08 18:00 LYY
+
+- Modify `generateAPI.py` and `generateUI.py`, speed up IO process. Now the time of generating image is almost the same as the time of the music.
+
+- Add a little prompt.
 
 ## 24.06.07 18:00 SQA
 

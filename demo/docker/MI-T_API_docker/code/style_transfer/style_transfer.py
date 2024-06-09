@@ -47,7 +47,8 @@ DATA_PATH = args.data_path
 CONTENT_PATH = args.content_path
 STYLE_PATH = args.style_path
 
-cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVICE).eval()
+if not (args.attn and args.luminance_only and args.aams):
+    cnn = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features.to(DEVICE).eval()
 
 
 ############################################################################
@@ -136,7 +137,13 @@ for music in name:
         if args.style == 'see list':
             style = STYLE_PATH + style
         # Now style is the complete path to the style image
-        style_img = image_loader(style, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
+
+        if style[-6:] != "99.png" :
+            style_img = image_loader(style, IMG_SIZE)
+            style_img = style_img.type(torch.cuda.FloatTensor).to(DEVICE)
+        else :
+            style_img = None
+            
         if args.content == 'see list':
             content = CONTENT_PATH + content
         ### image Loaded
@@ -145,12 +152,20 @@ for music in name:
             content_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
             input_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
         elif args.color_preserve:
-            content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-            input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-            style_img = color_matching(content_img, style_img).to(DEVICE)
+
+            content_img = image_loader(content, IMG_SIZE)
+            content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
+            input_img = image_loader(content, IMG_SIZE)
+            input_img = input_img.type(torch.cuda.FloatTensor).to(DEVICE)
+            if style_img is not None :
+                style_img = color_matching(content_img, style_img).to(DEVICE)
         elif args.luminance_only:
-            ori_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor).to(DEVICE)
-            content_img, style_img = luminance_process(ori_img, style_img)
+            ori_img = image_loader(content, IMG_SIZE)
+            ori_img = ori_img.type(torch.cuda.FloatTensor).to(DEVICE)
+            content_img = ori_img
+            if style_img is not None :
+                content_img, style_img = luminance_process(ori_img, style_img)
+
             input_img = content_img.clone().detach().to(DEVICE)
 
         else:
@@ -159,26 +174,43 @@ for music in name:
 
         input_size = Image.open(content).size
 
-        assert style_img.size() == content_img.size(), \
-            "we need to import style and content images of the same size"
 
-        output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
-        # a bad news is that if we concat them into a batch, cuda out of memory
-        # save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH, fname="tmp1.jpg")
-        if not args.gray and not args.color_preserve and args.luminance_only:
-            upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
-            lower_bound, _ = (-ori_img[0]).max(dim = 0)
-            # print(lower_bound.size(), upper_bound.size())
-            output = YIQ(output)
-            ori_img = YIQ(ori_img)
-            lumi_delta = output[0][0] - ori_img[0][0]
-            lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
-            ori_img[0][0] = ori_img[0][0] + lumi_delta
-            output = YIQ(ori_img, mode = "decode")
+        if style_img is not None:
+            if args.luminance_only and args.aams :
+                content_img = Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
+                style_img = Image.fromarray(np.uint8(style_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))
+                output = style_transfer(dict(content = content_img, style = style_img))
+                output = output[OutputKeys.OUTPUT_IMG]
+                output = torch.tensor(output).to(DEVICE).permute(2, 0, 1).type(torch.cuda.FloatTensor).unsqueeze(0) / 255
+                output = output.clamp(0, 1)
+            else :
+                output = run_style_transfer(cnn, content_img, style_img, input_img, args.lr, args.epoch, args.style_weight, args.content_weight)
+            if not args.gray and not args.color_preserve and args.luminance_only:
+                upper_bound, _ = (1 - ori_img[0]).min(dim = 0)
+                lower_bound, _ = (-ori_img[0]).max(dim = 0)
+                # print(lower_bound.size(), upper_bound.size())
+                output = YIQ(output)
+                ori_img = YIQ(ori_img)
+                lumi_delta = output[0][0] - ori_img[0][0]
+                lumi_delta = torch.clamp(lumi_delta, lower_bound, upper_bound)
+                ori_img[0][0] = ori_img[0][0] + lumi_delta
+                output = YIQ(ori_img, mode = "decode")
+        else :
+            output = content_img
+
 
         name_content, ext = os.path.splitext(os.path.basename(content))
         name_style, _ = os.path.splitext(os.path.basename(style))
         fname = name_content+'-'+name_style+ext
+
+
+        # output = torch.stack([0.299 * output, 0.587 * output, 0.114 * output], dim=0)
+        if args.attn and style_img is not None:
+            content_img = image_loader(content, IMG_SIZE)
+            content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
+            # attn = attention.attn_map(Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))).squeeze(2).unsqueeze(0).to(DEVICE)
+            attn = attention.attn_map(Image.open(content)).squeeze(2).unsqueeze(0).to(DEVICE)
+            output = attn * output + (1 - attn) * content_img
 
         save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH + music + "/", fname=fname)
         print(f"Transfer from {content} to {style} done")

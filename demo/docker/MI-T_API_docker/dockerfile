@@ -1,6 +1,14 @@
-FROM python:3.10
+FROM harbor.ai.iiis.co:9443/xuw/pytorch:v1.5
+# FROM pytorch/pytorch:2.2.1-cuda12.1-cudnn8-devel
 
-RUN echo '[global]\nindex-url=https://mirrors.aliyun.com/pypi/simple/\n' >> /etc/pip.conf
+# RUN echo '[global]\nindex-url=https://mirrors.aliyun.com/pypi/simple/\n' >> /etc/pip.conf
+
+RUN if grep -q '[global]' /etc/pip.conf; then \
+    sed -i '/index-url/d' /etc/pip.conf; \
+    echo 'index-url=https://mirrors.aliyun.com/pypi/simple/' >> /etc/pip.conf; \
+    else \
+    echo '[global]\nindex-url=https://mirrors.aliyun.com/pypi/simple/\n' >> /etc/pip.conf; \
+    fi
 
 ENV TZ=Asia/Shanghai \
     DEBIAN_FRONTEND=noninteractive
@@ -13,7 +21,7 @@ RUN pip install --no-cache-dir -r /root/requirements.txt && \
 RUN pip install opencv-python
 COPY ./code /root/code
 RUN apt update && apt install -y ffmpeg && rm -rf /var/lib/apt/lists/*
-COPY vgg19-dcbb9e9d.pth /root/.cache/torch/hub/checkpoints/vgg19-dcbb9e9d.pth
+# COPY vgg19-dcbb9e9d.pth /root/.cache/torch/hub/checkpoints/vgg19-dcbb9e9d.pth
 # RUN apt install ffmpeg
 
 WORKDIR /ssdshare/MI-T/code
