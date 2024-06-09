@@ -151,7 +151,7 @@ def binary_ask(i, j, inprompt, prompt):
     response, tokens = f_response(messages)
     number = re.findall(r'\d+', response)[0]
     if number != '1' and number != '2':
-        binary_ask(i,j,inprompt, prompt)
+        number = '1'
     if shuffle:
         number = '1' if number == '2' else '2'
     return int(number), tokens
