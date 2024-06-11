@@ -24,6 +24,8 @@ parser.add_argument('--output_path', type = str, default = '../data/.tmp/extract
 parser.add_argument('--window_size', type = int, default = 30_000)
 parser.add_argument('--overlap_size', type = int, default = 5_000)
 parser.add_argument('--device_num', type = int, default = 4)
+parser.add_argument('--ignore_lyrics', action='store_true')
+
 
 args = parser.parse_args()
 
@@ -94,11 +96,13 @@ def meaningful_lyrics(lyrics):
         return False
     return True
 
+with open(DATA_PATH + "../../extract/qwen_prompt", "r") as f:
+    qwen_prompt = f.read()
 
 def extract(file_name, device = 0, path = MUSIC_PATH) :
     query = tokenizer.from_list_format([
         {'audio': path + file_name + '.wav'}, 
-        {'text': 'Please give a detailed description (emotion, background, gender) of this piece of music, with no less than 5 sentences. You should give 5 sentences, NOT words. Do NOT use the lyrics of the music.'},
+        {'text': qwen_prompt},
     ])
     decription, _ = models[device].chat(tokenizer, query = query, history = None, system = SYSTEM_PROMPT)
 
@@ -106,21 +110,23 @@ def extract(file_name, device = 0, path = MUSIC_PATH) :
         {'audio': path + file_name + '.wav'},
         {'text': 'If the music does not have lyrics, say "NOLYRICS". If the music has lyrics, extract all the lyrics of this music.'},
     ])
-    
-    lyrics, _ = models[device].chat(tokenizer, query = query, history = None, system = SYSTEM_PROMPT)
-    # query = tokenizer.from_list_format([
-    #     {'text': 'Is the lyrics you have extracted meaningful and correct? If it isn\'t, please say "NOLYRICS".'},
-    # ])
-    # meaningful, _ = models[device].chat(tokenizer, query = query, history = _, system = SYSTEM_PROMPT)
-    # lyrics = lyrics.split('"')[1]
-    split_lyrics = lyrics.split('"')
-    if len(split_lyrics) > 1:
-        lyrics = split_lyrics[1]
-    else:
-        print("No second element found in split lyrics", lyrics)
-        lyrics = ""
-    if not meaningful_lyrics(lyrics) :# or "NOLYRICS" in meaningful:
+    if args.ignore_lyrics :
         lyrics = None
+    else :
+        lyrics, _ = models[device].chat(tokenizer, query = query, history = None, system = SYSTEM_PROMPT)
+        # query = tokenizer.from_list_format([
+        #     {'text': 'Is the lyrics you have extracted meaningful and correct? If it isn\'t, please say "NOLYRICS".'},
+        # ])
+        # meaningful, _ = models[device].chat(tokenizer, query = query, history = _, system = SYSTEM_PROMPT)
+        # lyrics = lyrics.split('"')[1]
+        split_lyrics = lyrics.split('"')
+        if len(split_lyrics) > 1:
+            lyrics = split_lyrics[1]
+        else:
+            print("No second element found in split lyrics", lyrics)
+            lyrics = ""
+        if not meaningful_lyrics(lyrics) :# or "NOLYRICS" in meaningful:
+            lyrics = None
     return decription, lyrics # + "\n meaningful: " + meaningful
 
 

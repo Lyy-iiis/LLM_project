@@ -40,9 +40,11 @@ async def process_chat(prompt: ChatRequest):
         os.makedirs(MUSIC_PATH)
         
     write(MUSIC_PATH + "music.wav", music[0], music[1].astype(np.int16))
+    # print("ajdlnvk;snv", music_name)
+    # print(type(music_name))
     with open(MUSIC_PATH + "prompt.txt", "w") as f:
         if music_name == "":
-            f.write("")
+            f.write("not provided\n")
         else:
             f.write("The name of the music is " + music_name + "\n")
     with open(MUSIC_PATH + "prompt.txt", "a") as f:

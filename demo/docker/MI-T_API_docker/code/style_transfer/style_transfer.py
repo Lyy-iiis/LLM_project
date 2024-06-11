@@ -6,6 +6,7 @@ import torch
 
 import os
 from PIL import Image
+import numpy as np
 
 import torchvision.models as models
 
@@ -23,7 +24,7 @@ parser.add_argument('--content_path', type=str, default = '../data/.tmp/generate
 parser.add_argument('--style_path', type=str, default = '../data/style/illustration_style/', help='The path to the style image')
 # parser.add_argument('--style', '-s', type=str, required=True, help='The path to the style image')
 parser.add_argument('--style', '-s', type=str, default = 'see list', help='The path to the style image')
-parser.add_argument('--epoch', '-e', type=int, default=50, help='The number of epoch')
+parser.add_argument('--epoch', '-e', type=int, default=200, help='The number of epoch')
 parser.add_argument('--content_weight', '-c_w', type=int, default=1, help='The weight of content loss')
 parser.add_argument('--style_weight', '-s_w', type=int, default=500, help='The weight of style loss')
 # parser.add_argument('--initialize_noise', '-i_n', action='store_true', help='Initialize with white noise? elif initialize with content image')
@@ -32,12 +33,21 @@ parser.add_argument('--output_path', '-o', type=str, default='transferred/')
 parser.add_argument('--gray', '-g', action='store_true')
 parser.add_argument('--color_preserve', '-c_p', action='store_true', help = "doesn't work if gray is True")
 parser.add_argument('--luminance_only', '-l_o', action='store_true', help = "doesn't work if gray is True")
+parser.add_argument('--aams', action = 'store_true')
+parser.add_argument('--attn', action = 'store_true')
 parser.add_argument('--lr', '-lr', type=float, default=1)
 parser.add_argument('--num_non_char', '-nnc', type = int, default = 1)
 parser.add_argument('--num_char', '-nc', type = int, default = 1)
 args = parser.parse_args()
 
 ############################################################################
+
+if args.luminance_only and args.aams :
+    from modelscope.pipelines import pipeline
+    from modelscope.utils.constant import Tasks
+    from modelscope.outputs import OutputKeys
+if args.attn :
+    import attention
 
 assert torch.cuda.is_available(), "WHY DONT YOU HAVE CUDA??????"
 DEVICE = torch.device("cuda:0")
@@ -52,6 +62,9 @@ if not (args.attn and args.luminance_only and args.aams):
 
 
 ############################################################################
+if args.attn :
+    attention.attn_init()
+
 input_file_name = []
 name = []
 # put all the picture under generate folder into a list
@@ -62,6 +75,8 @@ if args.content == 'see list':
     tmp = [x[:-4] for x in input_file_name]
     suffix, input_file_name = [], {}
     for x in tmp:
+        # if CONTENT_PATH[-1] == '/':
+        #     CONTENT_PATH = CONTENT_PATH[:-1]
         print(os.listdir(CONTENT_PATH+x))
         input_file_name[x] = []
         for pic in os.listdir(CONTENT_PATH+x):
@@ -76,16 +91,19 @@ else:
 # print("name:",name) # contains the name of input music, without the suffix
 
 style_file_name = {}
+style_file_name_nc = {}
 if args.style == 'see list':
     for fname in name :
         style_file_name[fname] = []
+        style_file_name_nc[fname] = []
         for t in range(args.num_char) :
             with open(DATA_PATH + '.tmp/process/' + fname + '.style' + str(t), "r") as f :
                 style_file_name[fname].append(f.readline().rstrip())
         for t in range(args.num_non_char) :
             with open(DATA_PATH + '.tmp/process/' + fname + '.style_nc' + str(t), "r") as f :
-                style_file_name[fname].append(f.readline().rstrip())
+                style_file_name_nc[fname].append(f.readline().rstrip())
         style_file_name[fname] = [x + '.png' for x in style_file_name[fname]]
+        style_file_name_nc[fname] = [x + '.png' for x in style_file_name_nc[fname]]
 else:
     style_file_name["specified"].append(args.style)
 
@@ -117,17 +135,19 @@ for music in name:
     for pic in input_file_name[music]:
         if len(pic) == 7:
             map[music][pic] = style_file_name[music][0]
+            style_file_name[music].pop(0)
         elif len(pic) == 9:
-            map[music][pic] = style_file_name[music][1]
+            map[music][pic] = style_file_name_nc[music][0]
+            style_file_name_nc[music].pop(0)
         else :
             print(pic)
             assert False, "You should not ask for more than 10 pictures one time"
-    style_file_name[music].pop(0)
-    style_file_name[music].pop(0)
 
 # print("map:", map)
 
-# for content, style in zip(input_file_name, style_file_name):
+if args.luminance_only and args.aams :
+    style_transfer = pipeline(Tasks.image_style_transfer, model_id='/ssdshare/LLMs/cv_aams_style-transfer_damo/')
+
 for music in name:
     for key, value in map[music].items():
         content = music + "/" + key
@@ -137,22 +157,21 @@ for music in name:
         if args.style == 'see list':
             style = STYLE_PATH + style
         # Now style is the complete path to the style image
-
         if style[-6:] != "99.png" :
             style_img = image_loader(style, IMG_SIZE)
             style_img = style_img.type(torch.cuda.FloatTensor).to(DEVICE)
         else :
             style_img = None
-            
         if args.content == 'see list':
             content = CONTENT_PATH + content
         ### image Loaded
         print(f"Transferring from {content} to {style}")
         if args.gray:
-            content_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
-            input_img = image_loader(content, IMG_SIZE, gray=True).type(torch.cuda.FloatTensor).to(DEVICE)
+            content_img = image_loader(content, IMG_SIZE, gray=True)
+            content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
+            input_img = image_loader(content, IMG_SIZE, gray=True)
+            input_img = input_img.type(torch.cuda.FloatTensor).to(DEVICE)
         elif args.color_preserve:
-
             content_img = image_loader(content, IMG_SIZE)
             content_img = content_img.type(torch.cuda.FloatTensor).to(DEVICE)
             input_img = image_loader(content, IMG_SIZE)
@@ -165,15 +184,16 @@ for music in name:
             content_img = ori_img
             if style_img is not None :
                 content_img, style_img = luminance_process(ori_img, style_img)
-
             input_img = content_img.clone().detach().to(DEVICE)
 
         else:
-            content_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
-            input_img = image_loader(content, IMG_SIZE).type(torch.cuda.FloatTensor)
+            content_img = image_loader(content, IMG_SIZE)
+            content_img = content_img.type(torch.cuda.FloatTensor)
+            input_img = image_loader(content, IMG_SIZE)
+            input_img = input_img.type(torch.cuda.FloatTensor)
+        # print(attn, attn.max(), attn.min())
 
         input_size = Image.open(content).size
-
 
         if style_img is not None:
             if args.luminance_only and args.aams :
@@ -198,11 +218,9 @@ for music in name:
         else :
             output = content_img
 
-
         name_content, ext = os.path.splitext(os.path.basename(content))
         name_style, _ = os.path.splitext(os.path.basename(style))
         fname = name_content+'-'+name_style+ext
-
 
         # output = torch.stack([0.299 * output, 0.587 * output, 0.114 * output], dim=0)
         if args.attn and style_img is not None:
@@ -211,6 +229,5 @@ for music in name:
             # attn = attention.attn_map(Image.fromarray(np.uint8(content_img.squeeze(0).cpu() * 255).transpose(1, 2, 0))).squeeze(2).unsqueeze(0).to(DEVICE)
             attn = attention.attn_map(Image.open(content)).squeeze(2).unsqueeze(0).to(DEVICE)
             output = attn * output + (1 - attn) * content_img
-
         save_image(output, size=input_img.data.size()[1:], input_size=input_size, output_path = OUTPUT_PATH + music + "/", fname=fname)
         print(f"Transfer from {content} to {style} done")

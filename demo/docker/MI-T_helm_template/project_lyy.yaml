@@ -3,7 +3,7 @@ NameSpace: s0170   # 自己的namespace （同用户名）
 
 ########### API Configuration ###########
 # vllmPort: 8000
-ContainerImage: harbor.ai.iiis.co:9443/lyy/tryapi20:latest
+ContainerImage: harbor.ai.iiis.co:9443/lyy/tryapi21:latest
 
 # Using the llama-3-8B-instruct model
 # ModelName: /ssdshare/Meta-Llama-3-8B-Instruct/

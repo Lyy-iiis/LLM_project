@@ -1,7 +1,6 @@
 gradio
 diffusers>=0.27.0
 diffuser
-
 torch>=2.1.1
 numpy
 fastapi
