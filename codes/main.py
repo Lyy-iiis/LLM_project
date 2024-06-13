@@ -92,11 +92,19 @@ def parse_name(music_name):
     return name
 
 if __name__ == '__main__':
-    os.system(f'ls {DATA_PATH}music/ > music_list.txt')
+    # os.system(f'ls {DATA_PATH}music/ > music_list.txt')
     with open('music_list.txt', 'r') as f:
         music_list = f.readlines()
+    print(music_list)
     for music in music_list:
         music = music[:-5]
         print(parse_name(music))
         run(music)
-        exit()
+        # exit()
+        if not os.path.exists(f'/ssdshare/music/240611/transferred/{music}/'):
+            os.makedirs(f'/ssdshare/music/240611/transferred/{music}/')
+        if not os.path.exists(f'/ssdshare/music/240611/generated/{music}/'):
+            os.makedirs(f'/ssdshare/music/240611/generated/{music}/')
+        os.system(f'cp -r {DATA_PATH}.tmp/style_transfer/{music}/ /ssdshare/music/240611/transferred/')
+        os.system(f'cp -r {DATA_PATH}.tmp/generate/{music}/ /ssdshare/music/240611/generated/')
+        # exit()
